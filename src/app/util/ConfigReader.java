@@ -24,10 +24,12 @@ public class ConfigReader {
         ConfigReader.buttonInfo.put(4, new ButtonInfo("Lund", "http://www.lu.se/", "<-- Tryck för Lund"));
         ConfigReader.buttonInfo.put(5, new ButtonInfo("ICA", "https://www.ica.se/", "<-- Tryck för ICA"));
 
+
+
         ConfigReader.bgColor = Color.WHITESMOKE;
         ConfigReader.sideBarColor = Color.WHITESMOKE;
         ConfigReader.mainText = "Välkommen till Bibliotek X";
-        ConfigReader.idleTimeInSeconds = 6;
+        ConfigReader.idleTimeInSeconds = 100;
     }
 
     public static HashMap<Integer, ButtonInfo> getButtonInfo() {
