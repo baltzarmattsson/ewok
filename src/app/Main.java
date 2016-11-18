@@ -1,5 +1,6 @@
 package app;
 
+import app.util.AltTabStopper;
 import app.util.ConfigReader;
 import app.util.IdleListener;
 import app.view.ViewController;
@@ -13,6 +14,9 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 public class Main extends Application {
 
@@ -60,7 +64,12 @@ public class Main extends Application {
             }
         });
 
-        primaryStage.setAlwaysOnTop(true);
+        // Starting AltTabStopper
+        AltTabStopper ats = AltTabStopper.create();
+        System.out.println(System.getProperty("os.name"));
+
+
+        this.primaryStage.setAlwaysOnTop(true);
         this.primaryStage.setFullScreen(true);
         this.primaryStage.show();
 
