@@ -41,10 +41,12 @@ public class Main extends Application {
         scene.getStylesheets().add(style);
 
         this.primaryStage.setScene(scene);
+        this.primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 
         primaryStage.setOnCloseRequest(e -> {
             e.consume();
-            primaryStage.setFullScreen(true);
+            if (primaryStage.isFullScreen() == false)
+                primaryStage.setFullScreen(true);
         });
 
         primaryStage.fullScreenProperty().addListener(new ChangeListener<Boolean>() {
@@ -58,10 +60,10 @@ public class Main extends Application {
             }
         });
 
-
-
+        primaryStage.setAlwaysOnTop(true);
         this.primaryStage.setFullScreen(true);
         this.primaryStage.show();
+
 
 //
 //        frame.setUndecorated(true);
