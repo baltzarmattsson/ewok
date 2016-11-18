@@ -1,0 +1,53 @@
+package app;
+
+import app.util.ConfigReader;
+import app.util.IdleListener;
+import app.view.ViewController;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
+
+public class Main extends Application {
+
+    private Stage primaryStage;
+    private GridPane rootLayout;
+
+    private final String WINDOW_TITLE = "Appfinder";
+    private ViewController controller;
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        this.primaryStage = primaryStage;
+        this.primaryStage.setTitle(WINDOW_TITLE);
+
+        // Loading the root layout
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(Main.class.getResource("view/View.fxml"));
+        this.rootLayout = loader.load();
+
+        this.controller = loader.getController();
+
+        // Getting CSS
+        String style = Main.class.getResource("view/css/styling.css").toExternalForm();
+        System.out.println(style);
+
+        Scene scene = new Scene(rootLayout);
+        scene.getStylesheets().add(style);
+
+        this.primaryStage.setScene(scene);
+        this.primaryStage.show();
+
+        this.primaryStage.setFullScreen(true);
+
+
+    }
+
+
+    public static void main(String[] args) {
+        ConfigReader.readConfig();
+        launch(args);
+    }
+}
