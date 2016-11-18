@@ -32,7 +32,6 @@ public class Main extends Application {
 
         // Getting CSS
         String style = Main.class.getResource("view/css/styling.css").toExternalForm();
-        System.out.println(style);
 
         Scene scene = new Scene(rootLayout);
         scene.getStylesheets().add(style);

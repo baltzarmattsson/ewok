@@ -15,6 +15,7 @@ public class ConfigReader {
     private static Color bgColor;
     private static Color sideBarColor;
 
+    // Sets temporary data for now
     public static void readConfig() {
         ConfigReader.buttonInfo.put(0, new ButtonInfo("Hem", null, null));
         ConfigReader.buttonInfo.put(1, new ButtonInfo("Wagner", "http://web.wagnerguide.com/2.0/uwl.aspx?Lang=en&Extern=true&Symbol=0x000000&Sub=False&MainButtonId=0&ButtonId=0&Text=", "<-- Tryck för guide"));

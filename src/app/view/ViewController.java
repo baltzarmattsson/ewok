@@ -77,6 +77,7 @@ public class ViewController {
             rowConst.setVgrow(Priority.ALWAYS);
             rootHolder.getRowConstraints().add(rowConst);
 
+            // Converting javafx Color to CSS hex
             Color c = (Color) ConfigReader.getSideBarColor();
             String hex = String.format("#%02X%02X%02X",
                     (int) (c.getRed() * 255),
