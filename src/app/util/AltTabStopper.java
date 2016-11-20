@@ -1,10 +1,6 @@
 package app.util;
 
-import sun.jvm.hotspot.utilities.WorkerThread;
-
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class AltTabStopper implements Runnable
@@ -35,14 +31,14 @@ public class AltTabStopper implements Runnable
         try {
             Robot robot = new Robot();
             while (working) {
-                System.out.println("working");
-//                robot.keyRelease(KeyEvent.VK_ALT);
-//                robot.keyRelease(KeyEvent.VK_TAB);
-//                if (this.isWindows)
-//                    robot.keyRelease(KeyEvent.VK_WINDOWS);
-//                else if (this.isMac)
-//                    robot.keyRelease(KeyEvent.VK_META);
-                try { robot.delay(10); } catch(Exception e) {}
+                robot.keyRelease(KeyEvent.VK_ALT);
+                robot.keyRelease(KeyEvent.VK_TAB);
+                robot.keyRelease(KeyEvent.VK_CONTROL);
+                if (this.isWindows) {
+                    robot.keyRelease(KeyEvent.VK_WINDOWS);
+                } else if (this.isMac) {
+                    robot.keyRelease(KeyEvent.VK_META);
+                } try { robot.delay(10); } catch(Exception e) {}
             }
         } catch (Exception e) { e.printStackTrace(); }
     }
