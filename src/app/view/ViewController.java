@@ -19,6 +19,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import jdk.nashorn.internal.runtime.regexp.joni.Config;
@@ -34,6 +35,8 @@ public class ViewController {
     private IdleListener idleListener;
     private boolean idleActionIsPerformed;
 
+    private String defaultSiteURL;
+
     @FXML
     private GridPane rootHolder;
 
@@ -41,7 +44,6 @@ public class ViewController {
     private void initialize() {
 
         this.setupFromConfig();
-        this.showDefaultSite();
 
         this.idleListener = new IdleListener(this);
 
@@ -52,67 +54,67 @@ public class ViewController {
             idleListener.resetTimeAtLastAction();
             this.idleActionIsPerformed = false;
         });
-        rootHolder.addEventHandler(KeyEvent.ANY, e -> {
-            idleListener.resetTimeAtLastAction();
-            this.idleActionIsPerformed = false;
-        });
+        // Removing this because of the robot realising buttons and triggering KeyEvents
+//        rootHolder.addEventHandler(KeyEvent.ANY, e -> {
+//            idleListener.resetTimeAtLastAction();
+//            this.idleActionIsPerformed = false;
+//        });
         webView.addEventHandler(MouseEvent.ANY, e -> {
             idleListener.resetTimeAtLastAction();
             this.idleActionIsPerformed = false;
         });
+
+        this.showDefaultSite();
 
     }
 
     private void setupFromConfig() {
 
         rootHolder.getRowConstraints().clear();
+        rootHolder.getColumnConstraints().clear();
+
+        // Adding two columns to the view, first with getFirstColumnPercentWidth from ConfigReader
+        ColumnConstraints cc = new ColumnConstraints();
+        cc.setPercentWidth(ConfigReader.getFirstColumnPercentWidth());
+        rootHolder.getColumnConstraints().add(cc);
+        rootHolder.getColumnConstraints().add(new ColumnConstraints());
 
         HashMap<Integer, ButtonInfo> buttonInfo = ConfigReader.getButtonInfo();
         int nbrOfButtons = buttonInfo.size();
+
+        // Setting the default URL to the first buttons URL
+        this.defaultSiteURL = buttonInfo.get(0).getURL();
 
         // Adding row constraints
         for (int i = 0; i < nbrOfButtons; i++) {
             RowConstraints rowConst = new RowConstraints();
             rowConst.setValignment(VPos.CENTER);
-            rowConst.setPercentHeight(100 / nbrOfButtons);
+            rowConst.setPercentHeight(100.0 / nbrOfButtons);
             rowConst.setVgrow(Priority.ALWAYS);
             rootHolder.getRowConstraints().add(rowConst);
 
             // Converting javafx Color to CSS hex
-            Color c = (Color) ConfigReader.getSideBarColor();
+            Color c = ConfigReader.getBgColor();
             String hex = String.format("#%02X%02X%02X",
                     (int) (c.getRed() * 255),
                     (int) (c.getGreen() * 255),
                     (int) (c.getBlue() * 255));
             rootHolder.setStyle("-fx-background-color:" + hex + ";");
         }
-
-
         // Adding buttons
         for (int i = 0; i < nbrOfButtons; i++) {
             ButtonInfo bInfo = buttonInfo.get(i);
             Button button = new Button();
-            button.setText(bInfo.getText());
 
+            button.setText(bInfo.getText());
             // Applying CSS
             button.setId("navigationbutton");
-
-            // Adding listener to buttons, doing differently for Home-button
-            if (i == 0) { // Is home button
-                button.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-                    showDefaultSite();
-                });
-            } else {
-                button.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-                    showWebsite(bInfo.getURL());
-                });
-            }
-
+            // Adding listener to buttons
+            button.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> showWebsite(bInfo.getURL()));
             rootHolder.add(button, 0, i);
-
             // Adding helper text to the main view
-            rootHolder.add(new Label(bInfo.getHelperText()), 1, i);
-
+            // Disabled for now
+//            rootHolder.add(new Label(bInfo.getHelperText()), 1, i);
         }
 
         // Centers the buttons horizontally
@@ -124,26 +126,19 @@ public class ViewController {
         // Adding web view
         webView = new WebView();
         webEngine = webView.getEngine();
+        webView.setVisible(true);
 
-        // Adding drag-handler for pekskärm
-//        webView.setOnDragDetected(e -> {
-//            System.out.println(e.getX() + " " + e.getY());
-//            webEngine.executeScript("window.scrollTo(" + e.getY() + ", " + e.getX() + ");");
-////            webView.setTranslateX(e.getX());
-////            webView.setTranslateY(e.getY());
-//
-//        });
-        rootHolder.add(webView, 1, 0, 1, nbrOfButtons + 2);
+        rootHolder.add(webView, 1, 0, 1, nbrOfButtons);
     }
 
     @FXML
     private void showDefaultSite() {
-        webView.setVisible(false);
+        this.showWebsite(defaultSiteURL);
     }
 
     private void showWebsite(String URL) {
-        webView.setVisible(true);
         webEngine.load(URL);
+        rootHolder.getChildren();
     }
 
 
