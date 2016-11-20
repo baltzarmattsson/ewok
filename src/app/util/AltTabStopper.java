@@ -4,6 +4,7 @@ import sun.jvm.hotspot.utilities.WorkerThread;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class AltTabStopper implements Runnable
@@ -24,6 +25,7 @@ public class AltTabStopper implements Runnable
     public static AltTabStopper create() {
         boolean isWindows = System.getProperty("os.name").toLowerCase().contains("win");
         boolean isMac = (isWindows) ? false : System.getProperty("os.name").toLowerCase().contains("mac") ? true : false;
+        System.out.println("isMac " + isMac);
         AltTabStopper stopper = new AltTabStopper(isWindows, isMac);
         new Thread(stopper, "Alt-Tab Stopper").start();
         return stopper;
@@ -33,14 +35,16 @@ public class AltTabStopper implements Runnable
         try {
             Robot robot = new Robot();
             while (working) {
-                robot.keyRelease(KeyEvent.VK_ALT);
-                robot.keyRelease(KeyEvent.VK_TAB);
-                if (this.isWindows)
-                    robot.keyRelease(KeyEvent.VK_WINDOWS);
-                else if (this.isMac)
-                    robot.keyRelease(KeyEvent.VK_META);
-                try { Thread.sleep(10); } catch(Exception e) {}
+                System.out.println("working");
+//                robot.keyRelease(KeyEvent.VK_ALT);
+//                robot.keyRelease(KeyEvent.VK_TAB);
+//                if (this.isWindows)
+//                    robot.keyRelease(KeyEvent.VK_WINDOWS);
+//                else if (this.isMac)
+//                    robot.keyRelease(KeyEvent.VK_META);
+                try { robot.delay(10); } catch(Exception e) {}
             }
-        } catch (Exception e) { e.printStackTrace(); System.exit(-1); }
+        } catch (Exception e) { e.printStackTrace(); }
     }
+
 }
