@@ -3,6 +3,7 @@ package app;
 import app.util.AltTabStopper;
 import app.util.ConfigReader;
 import app.util.IdleListener;
+import app.view.ConfigViewController;
 import app.view.ViewController;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -25,6 +26,48 @@ public class Main extends Application {
 
     private final String WINDOW_TITLE = "Appfinder";
     private ViewController controller;
+    private ConfigViewController configController;
+
+//    @Override
+//    public void start(Stage primaryStage) throws Exception {
+//        this.primaryStage = primaryStage;
+//        this.primaryStage.setTitle(WINDOW_TITLE);
+//
+//        // Loading the root layout
+//        FXMLLoader loader = new FXMLLoader();
+//        loader.setLocation(Main.class.getResource("view/View.fxml"));
+//        this.rootLayout = loader.load();
+//
+//        this.controller = loader.getController();
+//
+//        // Getting CSS
+//        String style = Main.class.getResource("view/css/styling.css").toExternalForm();
+//
+//        Scene scene = new Scene(rootLayout);
+//        scene.getStylesheets().add(style);
+//
+//        this.primaryStage.setScene(scene);
+//        this.primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+//
+//        primaryStage.setOnCloseRequest(e -> {
+//            e.consume();
+//            if (primaryStage.isFullScreen() == false)
+//                primaryStage.setFullScreen(true);
+//        });
+//
+//        primaryStage.fullScreenProperty().addListener((observable, oldValue, newValue) -> {
+//            if(newValue != null && !newValue.booleanValue()) {
+//                primaryStage.setFullScreen(true);
+//            }
+//        });
+//
+//        this.primaryStage.setAlwaysOnTop(true);
+//        this.primaryStage.setFullScreen(true);
+//        this.primaryStage.show();
+//
+//        // Starting AltTabStopper
+//        AltTabStopper.create();
+//    }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -33,40 +76,14 @@ public class Main extends Application {
 
         // Loading the root layout
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(Main.class.getResource("view/View.fxml"));
+        loader.setLocation(Main.class.getResource("view/ConfigView.fxml"));
         this.rootLayout = loader.load();
-
-        this.controller = loader.getController();
-
-        // Getting CSS
-        String style = Main.class.getResource("view/css/styling.css").toExternalForm();
-
+        this.configController = loader.getController();
         Scene scene = new Scene(rootLayout);
-        scene.getStylesheets().add(style);
-
         this.primaryStage.setScene(scene);
-        this.primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 
-        primaryStage.setOnCloseRequest(e -> {
-            e.consume();
-            if (primaryStage.isFullScreen() == false)
-                primaryStage.setFullScreen(true);
-        });
-
-        primaryStage.fullScreenProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue != null && !newValue.booleanValue()) {
-                primaryStage.setFullScreen(true);
-            }
-        });
-
-        this.primaryStage.setAlwaysOnTop(true);
-        this.primaryStage.setFullScreen(true);
         this.primaryStage.show();
-
-        // Starting AltTabStopper
-        AltTabStopper.create();
     }
-
 
     public static void main(String[] args) {
         ConfigReader.readConfig(null);
