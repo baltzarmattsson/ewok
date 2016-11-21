@@ -86,7 +86,7 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-        ConfigReader.readConfig(null);
+//        ConfigReader.readConfig(null);
         launch(args);
     }
 }

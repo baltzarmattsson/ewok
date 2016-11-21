@@ -1,7 +1,8 @@
 package app.view;
 
-// Controls all the user events in the view
+// Controls all the user events in the buttons-browser-view
 
+import app.Main;
 import app.util.ButtonInfo;
 import app.util.ConfigReader;
 import app.util.Configuration;
@@ -9,9 +10,12 @@ import app.util.IdleListener;
 import javafx.application.Platform;
 import javafx.event.EventType;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.KeyCode;
@@ -23,8 +27,11 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import jdk.nashorn.internal.runtime.regexp.joni.Config;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 public class ViewController {
@@ -44,12 +51,17 @@ public class ViewController {
 
     @FXML
     private void initialize() {
-        Configuration config = ConfigReader.getConfiguration();
-        this.setupFromConfig(config);
+        Configuration config = ConfigReader.getConfigInstance();
+        if (config != null) {
+            this.setupFromConfig(config);
 
-        this.idleListener = new IdleListener(this, config.getIdleTimeInSeconds());
-        this.idleTimeInSeconds = config.getIdleTimeInSeconds();
+            this.addListeners();
+            this.showDefaultSite();
 
+        }
+    }
+
+    private void addListeners() {
         // Adding listeners to both mouse and keyboard-events, resets timeSinceLastAction in the listener thread
         // and tells us that the idle action (switching to default welcome-screen) is false, the user might
         // have switched page
@@ -66,12 +78,12 @@ public class ViewController {
             idleListener.resetTimeAtLastAction();
             this.idleActionIsPerformed = false;
         });
-
-        this.showDefaultSite();
-
     }
 
     private void setupFromConfig(Configuration config) {
+
+        this.idleListener = new IdleListener(this, config.getIdleTimeInSeconds());
+        this.idleTimeInSeconds = config.getIdleTimeInSeconds();
 
         rootHolder.getRowConstraints().clear();
         rootHolder.getColumnConstraints().clear();
@@ -115,9 +127,6 @@ public class ViewController {
             // Adding listener to buttons
             button.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> showWebsite(bInfo.getURL()));
             rootHolder.add(button, 0, i);
-            // Adding helper text to the main view
-            // Disabled for now
-//            rootHolder.add(new Label(bInfo.getHelperText()), 1, i);
         }
 
         // Centers the buttons horizontally
@@ -129,6 +138,7 @@ public class ViewController {
         webView.setVisible(true);
 
         rootHolder.add(webView, 1, 0, 1, nbrOfButtons);
+
     }
 
     @FXML
@@ -149,5 +159,30 @@ public class ViewController {
             System.out.println("Switching to default");
         }
         this.idleListener = new IdleListener(this, this.idleTimeInSeconds);
+    }
+
+    @FXML
+    private void showPasswordPrompt() {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(Main.class.getResource("view/PasswordPrompt.fxml"));
+        AnchorPane page = null;
+        try {
+            page = loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Stage dialogStage = new Stage();
+        dialogStage.initModality(Modality.NONE);
+        Scene scene = new Scene(page);
+        dialogStage.setScene(scene);
+
+        PasswordPromptController controller = loader.getController();
+        controller.setDialogStage(dialogStage);
+
+        dialogStage.showAndWait();
+        if (controller.isPasswordOk()) {
+            System.out.println("Pass OK");
+        }
     }
 }

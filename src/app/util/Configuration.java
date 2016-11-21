@@ -12,13 +12,15 @@ public class Configuration {
     private Color bgColor;
     private double firstColumnPercentWidth;
     private String homeScreenURL;
+    private boolean firstButtonIsHomescreen;
 
-    public Configuration(HashMap<Integer, ButtonInfo> buttonInfo, int idleTimeInSeconds, Color bgColor, double firstColumnPercentWidth, String homeScreenURL) {
+    public Configuration(HashMap<Integer, ButtonInfo> buttonInfo, int idleTimeInSeconds, Color bgColor, double firstColumnPercentWidth, String homeScreenURL, boolean firstButtonIsHomescreen) {
         this.buttonInfo = buttonInfo;
         this.idleTimeInSeconds = idleTimeInSeconds;
         this.bgColor = bgColor;
         this.firstColumnPercentWidth = firstColumnPercentWidth;
         this.homeScreenURL = homeScreenURL;
+        this.firstButtonIsHomescreen = firstButtonIsHomescreen;
     }
 
     public Configuration() {
@@ -62,5 +64,13 @@ public class Configuration {
 
     public void setHomeScreenURL(String homeScreenURL) {
         this.homeScreenURL = homeScreenURL;
+    }
+
+    public boolean isFirstButtonIsHomescreen() {
+        return firstButtonIsHomescreen;
+    }
+
+    public void setFirstButtonIsHomescreen(boolean firstButtonIsHomescreen) {
+        this.firstButtonIsHomescreen = firstButtonIsHomescreen;
     }
 }
