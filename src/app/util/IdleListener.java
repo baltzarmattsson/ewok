@@ -36,7 +36,7 @@ public class IdleListener extends Thread {
             } catch (InterruptedException e) {
             }
         }
-        System.out.println("Requesting idle action from Controller @IdleListener:38");
+//        System.out.println("Requesting idle action from Controller @IdleListener:38");
         this.controller.performIdleAction();
 
     }

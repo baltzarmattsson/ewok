@@ -68,7 +68,6 @@ public class ConfigViewController {
             this.firstButtonIsHomescreen = config.isFirstButtonIsHomescreen();
             this.homeScreenURL = config.getHomeScreenURL();
 
-
             // Adding buttons
             for (Map.Entry<Integer, ButtonInfo> map : this.buttonInfo.entrySet()) {
                 int index = map.getKey();
@@ -221,15 +220,18 @@ public class ConfigViewController {
 
     private Configuration generateConfiguration() {
 
-        Configuration retConfig = new Configuration();
+        // TODO
+//        Configuration retConfig = new Configuration();
 
-        retConfig.setButtonInfo(this.buttonInfo);
-        retConfig.setFirstColumnPercentWidth(this.firstColumnPercentWidth);
-        retConfig.setIdleTimeInSeconds(this.idleTimeInSeconds);
-        retConfig.setBgColor(this.bgColor);
-        retConfig.setHomeScreenURL(this.homeScreenURL);
-        retConfig.setFirstButtonIsHomescreen(this.firstButtonIsHomescreen);
-        return retConfig;
+//        retConfig.setButtonInfo(this.buttonInfo);
+//        retConfig.setFirstColumnPercentWidth(this.firstColumnPercentWidth);
+//        retConfig.setIdleTimeInSeconds(this.idleTimeInSeconds);
+//        retConfig.setBgColor(this.bgColor);
+//        retConfig.setHomeScreenURL(this.homeScreenURL);
+//        retConfig.setFirstButtonIsHomescreen(this.firstButtonIsHomescreen);
+//        return retConfig;
+
+        return ConfigReader.getTempConfig();
     }
 
     private void updateExample() {
@@ -250,6 +252,6 @@ public class ConfigViewController {
 //        ViewController viewController = loader.getController();
 //        Scene scene = new Scene(exampleView);
 
-        this.rootHolder.add(exampleView, 1, 0);
+        this.rootHolder.add(exampleView, 1, 0, 1, Integer.MAX_VALUE);
     }
 }
