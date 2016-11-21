@@ -4,6 +4,7 @@ package app.view;
 
 import app.util.ButtonInfo;
 import app.util.ConfigReader;
+import app.util.Configuration;
 import app.util.IdleListener;
 import javafx.application.Platform;
 import javafx.event.EventType;
@@ -34,6 +35,7 @@ public class ViewController {
 
     private IdleListener idleListener;
     private boolean idleActionIsPerformed;
+    private int idleTimeInSeconds;
 
     private String defaultSiteURL;
 
@@ -42,10 +44,11 @@ public class ViewController {
 
     @FXML
     private void initialize() {
+        Configuration config = ConfigReader.getConfiguration();
+        this.setupFromConfig(config);
 
-        this.setupFromConfig();
-
-        this.idleListener = new IdleListener(this);
+        this.idleListener = new IdleListener(this, config.getIdleTimeInSeconds());
+        this.idleTimeInSeconds = config.getIdleTimeInSeconds();
 
         // Adding listeners to both mouse and keyboard-events, resets timeSinceLastAction in the listener thread
         // and tells us that the idle action (switching to default welcome-screen) is false, the user might
@@ -68,18 +71,18 @@ public class ViewController {
 
     }
 
-    private void setupFromConfig() {
+    private void setupFromConfig(Configuration config) {
 
         rootHolder.getRowConstraints().clear();
         rootHolder.getColumnConstraints().clear();
 
         // Adding two columns to the view, first with getFirstColumnPercentWidth from ConfigReader
         ColumnConstraints cc = new ColumnConstraints();
-        cc.setPercentWidth(ConfigReader.getFirstColumnPercentWidth());
+        cc.setPercentWidth(config.getFirstColumnPercentWidth());
         rootHolder.getColumnConstraints().add(cc);
         rootHolder.getColumnConstraints().add(new ColumnConstraints());
 
-        HashMap<Integer, ButtonInfo> buttonInfo = ConfigReader.getButtonInfo();
+        HashMap<Integer, ButtonInfo> buttonInfo = config.getButtonInfo();
         int nbrOfButtons = buttonInfo.size();
 
         // Setting the default URL to the first buttons URL
@@ -94,7 +97,7 @@ public class ViewController {
             rootHolder.getRowConstraints().add(rowConst);
 
             // Converting javafx Color to CSS hex
-            Color c = ConfigReader.getBgColor();
+            Color c = config.getBgColor();
             String hex = String.format("#%02X%02X%02X",
                     (int) (c.getRed() * 255),
                     (int) (c.getGreen() * 255),
@@ -119,9 +122,6 @@ public class ViewController {
 
         // Centers the buttons horizontally
         rootHolder.getColumnConstraints().get(0).setHalignment(HPos.CENTER);
-
-        // Adding main header text
-        rootHolder.add(new Label(ConfigReader.getMainText()), 1, 0);
 
         // Adding web view
         webView = new WebView();
@@ -148,6 +148,6 @@ public class ViewController {
             idleActionIsPerformed = true;
             System.out.println("Switching to default");
         }
-        this.idleListener = new IdleListener(this);
+        this.idleListener = new IdleListener(this, this.idleTimeInSeconds);
     }
 }

@@ -38,7 +38,8 @@ public class AltTabStopper implements Runnable
                     robot.keyRelease(KeyEvent.VK_WINDOWS);
                 } else if (this.isMac) {
                     robot.keyRelease(KeyEvent.VK_META);
-                } try { robot.delay(10); } catch(Exception e) {}
+                    robot.keyRelease(KeyEvent.META_DOWN_MASK);
+                } try { Thread.sleep(10); } catch(Exception e) {}
             }
         } catch (Exception e) { e.printStackTrace(); }
     }

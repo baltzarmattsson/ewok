@@ -53,63 +53,23 @@ public class Main extends Application {
                 primaryStage.setFullScreen(true);
         });
 
-        primaryStage.fullScreenProperty().addListener(new ChangeListener<Boolean>() {
-
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable,
-                                Boolean oldValue, Boolean newValue) {
-                if(newValue != null && !newValue.booleanValue()) {
-                    primaryStage.setFullScreen(true);
-                }
+        primaryStage.fullScreenProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue != null && !newValue.booleanValue()) {
+                primaryStage.setFullScreen(true);
             }
         });
-
-        // Starting AltTabStopper
-        AltTabStopper ats = AltTabStopper.create();
-        System.out.println(System.getProperty("os.name"));
-
 
         this.primaryStage.setAlwaysOnTop(true);
         this.primaryStage.setFullScreen(true);
         this.primaryStage.show();
 
-
-//
-//        frame.setUndecorated(true);
-//        // Make frame topmost
-//        frame.setAlwaysOnTop(true);
-//        // Disable Alt+F4 on Windows
-//        frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-//        // Make frame full-screen
-//        frame.setExtendedState(Frame.MAXIMIZED_BOTH);
-//        // Display frame
-//        frame.setVisible(true);
-
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                while(true){
-//                    //in my initial try i didn't add sleep,
-//                    //and i ended up,turning off the pc,lost this post for a while
-//                    try {
-//                        Thread.sleep(100); //buy little millieseconds
-//                    } catch (InterruptedException e) {}
-//
-//                    Platform.runLater(()->{
-//                        primaryStage.toFront();
-//                        //bring your UI on top of everyone
-//                    });
-//                }
-//
-//            }
-//        }).start();
-
-
+        // Starting AltTabStopper
+        AltTabStopper.create();
     }
 
 
     public static void main(String[] args) {
-        ConfigReader.readConfig();
+        ConfigReader.readConfig(null);
         launch(args);
     }
 }

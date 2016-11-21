@@ -10,15 +10,17 @@ import java.util.concurrent.TimeUnit;
 
 public class IdleListener extends Thread {
 
-    private final long IDLE_TIME_THRESHOLD_SECONDS = ConfigReader.getIdleTimeInSeconds();
-    private long timeAtLastAction = System.currentTimeMillis();
+    private long IDLE_TIME_THRESHOLD_SECONDS;
+    private long timeAtLastAction;
 
     private ViewController controller;
 
-    public IdleListener(ViewController controller) {
+    public IdleListener(ViewController controller, int idleTimeInSeconds) {
         this.setDaemon(true);
         this.start();
         this.controller = controller;
+        this.IDLE_TIME_THRESHOLD_SECONDS = idleTimeInSeconds;
+        this.timeAtLastAction = System.currentTimeMillis();
     }
 
     // Listens for user inactivity. If user is idle for IDLE_TIME_THRESHOLD_SECONDS, it requests
