@@ -16,6 +16,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.VPos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
@@ -43,6 +44,10 @@ public class ConfigViewController {
 
     @FXML
     private GridPane rootHolder;
+    @FXML
+    private AnchorPane exampleViewHolder;
+    @FXML
+    private GridPane exampleView;
     @FXML
     private VBox sideBarVbox;
     private VBox buttonVbox;
@@ -243,7 +248,7 @@ public class ConfigViewController {
         this.updateExample();
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(Main.class.getResource("view/View.fxml"));
-        GridPane exampleView = null;
+        this.exampleView = null;
         try {
             exampleView = loader.load();
         } catch (IOException e) {
@@ -251,6 +256,13 @@ public class ConfigViewController {
         }
 //        ViewController viewController = loader.getController();
 //        Scene scene = new Scene(exampleView);
+
+//        exampleViewHolder.getChildren().add(exampleView);
+
+
+        rootHolder.setHgrow(exampleViewHolder, Priority.ALWAYS);
+        rootHolder.setVgrow(exampleViewHolder, Priority.ALWAYS);
+
 
         this.rootHolder.add(exampleView, 1, 0, 1, Integer.MAX_VALUE);
     }
