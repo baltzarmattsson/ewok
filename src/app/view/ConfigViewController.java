@@ -9,10 +9,9 @@ import app.util.IdleListener;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
+import javafx.geometry.Orientation;
 import javafx.geometry.VPos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -24,58 +23,108 @@ import java.util.Map;
 
 public class ConfigViewController {
 
+    // Configurations
     private HashMap<Integer, ButtonInfo> buttonInfo;
+    private Color bgColor;
+    private int idleTimeInSeconds;
+    private double firstColumnPercentWidth;
 
 
     @FXML
     private GridPane rootHolder;
     @FXML
     private VBox sideBarVbox;
-    @FXML
-    private
+    private VBox buttonVbox;
 
     @FXML
     private void initialize() {
 
         buttonInfo = new HashMap<Integer, ButtonInfo>();
 
-        this.updateSidebar();
+
+        this.initializeView();
 
     }
 
-    private void updateSidebar() {
+    private void initializeView() {
 
-        sideBarVbox.getChildren().clear();
+        // Button for adding buttons
         sideBarVbox.getChildren().add(new Label("Knappar"));
-
         Button addNewButton = new Button("Lägg till knapp");
+
+        buttonVbox = new VBox();
+
         addNewButton.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
             HBox hbox = new HBox();
             TextField buttonText = new TextField(), buttonURL = new TextField();
             buttonText.setPromptText("Namn");
             buttonURL.setPromptText("URL");
-            Button removeButton = new Button("Ta bort");
+            Button removeButton = new Button("X");
+
             removeButton.addEventHandler(MouseEvent.MOUSE_CLICKED, e2 -> {
-                int indexKey = sideBarVbox.getChildren().size()-1;
-                sideBarVbox.getChildren().remove(indexKey);
+                for (int i = 0; i < buttonVbox.getChildren().size(); i++) {
+                    HBox iteratedHbox = (HBox) buttonVbox.getChildren().get(i);
+                    Button iteratedButton = (Button) iteratedHbox.getChildren().get(2);
+                    if (removeButton == iteratedButton)
+                        buttonVbox.getChildren().remove(i);
+                }
+
             });
             hbox.getChildren().addAll(buttonText, buttonURL, removeButton);
 
-            sideBarVbox.getChildren().add(hbox);
-            updateSidebar();
-            System.out.println(sideBarVbox.getChildren().size());
+            this.buttonVbox.getChildren().add(hbox);
         });
         sideBarVbox.getChildren().add(addNewButton);
+        sideBarVbox.getChildren().add(buttonVbox);
 
 
+        // Chosing background color
+        ColorPicker colorPicker = new ColorPicker();
+        colorPicker.setOnAction(e -> {
+            if (colorPicker.getValue() != null)
+                this.bgColor = colorPicker.getValue();
+            System.out.println(bgColor);
+        });
 
-        for (Map.Entry<Integer, ButtonInfo> buttonMap : buttonInfo.entrySet()) {
-            int key = buttonMap.getKey();
-            ButtonInfo bi = buttonMap.getValue();
+        sideBarVbox.getChildren().add(new Label("Välj bakgrundsfärg"));
+        sideBarVbox.getChildren().add(colorPicker);
 
-            sideBarVbox.getChildren().add(new TextField());
-        }
+        // Adding idle-time slider
+        Slider idleSlider = new Slider();
+        idleSlider.setOrientation(Orientation.HORIZONTAL);
+        idleSlider.setMax(1000);
+        Label idleLabel = new Label("Inaktivitetstid (0 sekunder):");
+        idleSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            idleTimeInSeconds = newValue.intValue();
+            idleLabel.setText("Inaktivitetstid (" + idleTimeInSeconds + " sekunder):");
+        });
+
+        sideBarVbox.getChildren().add(idleLabel);
+        sideBarVbox.getChildren().add(idleSlider);
+
+        // Adding sidebar width slider
+        Slider widthSlider = new Slider();
+        widthSlider.setOrientation(Orientation.HORIZONTAL);
+        widthSlider.setMax(100);
+        Label widthLabel = new Label("Bredd sidomeny (0% bredd):");
+        widthSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            firstColumnPercentWidth = newValue.intValue();
+            widthLabel.setText("Bredd sidomeny (" + firstColumnPercentWidth + "% bredd):");
+        });
+
+        sideBarVbox.getChildren().add(widthLabel);
+        sideBarVbox.getChildren().add(widthSlider);
+
+        // Homescreen
 
     }
 
+    private Configuration generateConfiguration() {
+
+        Configuration retConfig = new Configuration();
+        retConfig.setButtonInfo(this.buttonInfo);
+
+        return retConfig;
+
+    }
 }
