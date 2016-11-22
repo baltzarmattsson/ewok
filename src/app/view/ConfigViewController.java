@@ -34,6 +34,8 @@ import java.util.Map;
 
 public class ConfigViewController {
 
+    private Main mainApp;
+
     // Configurations
     private HashMap<Integer, ButtonInfo> buttonInfo = new HashMap<Integer, ButtonInfo>();
     private Color bgColor;
@@ -195,6 +197,17 @@ public class ConfigViewController {
         sideBarVbox.setMargin(updateViewButton, new Insets(50, 0, 0, 0));
         sideBarVbox.getChildren().add(updateViewButton);
 
+        // Adding go back to main view-button
+        Button saveAndExitButton = new Button("Gå till webbskal");
+        saveAndExitButton.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+            if (this.exampleController != null)
+                this.exampleController.clearListeners();
+            this.saveConfiguration();
+            mainApp.loadWebView();
+        });
+
+        sideBarVbox.getChildren().add(saveAndExitButton);
+
         rootHolder.getColumnConstraints().get(0).setHgrow(Priority.NEVER);
 
         // Adding a clean gridpane as exampleview
@@ -233,7 +246,7 @@ public class ConfigViewController {
         return hbox;
     }
 
-    private Configuration generateConfiguration() {
+    private Configuration saveConfiguration() {
 
         // TODO
         Configuration retConfig = new Configuration();
@@ -276,7 +289,7 @@ public class ConfigViewController {
         if (this.exampleController != null)
             this.exampleController.clearListeners();
 
-        Configuration config = this.generateConfiguration();
+        Configuration config = this.saveConfiguration();
         ConfigReader.setConfigInstance(config);
         this.showExample();
     }
@@ -308,4 +321,11 @@ public class ConfigViewController {
 //        exampleView.getColumnConstraints().get(0).setHgrow(Priority.NEVER);
     }
 
+    public Main getMainApp() {
+        return mainApp;
+    }
+
+    public void setMainApp(Main mainApp) {
+        this.mainApp = mainApp;
+    }
 }

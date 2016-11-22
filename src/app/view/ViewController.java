@@ -37,6 +37,8 @@ import java.util.HashMap;
 
 public class ViewController {
 
+    private Main mainApp;
+
     @FXML
     private WebView webView;
     private WebEngine webEngine;
@@ -53,7 +55,8 @@ public class ViewController {
 
     @FXML
     private void initialize() {
-        Configuration config = ConfigReader.getConfigInstance();
+//        Configuration config = ConfigReader.getConfigInstance();
+        Configuration config = ConfigReader.getTempConfig();
         if (config != null) {
             this.setupFromConfig(config);
 
@@ -95,9 +98,13 @@ public class ViewController {
         int nbrOfButtons = buttonInfo.size();
 
         // Setting the default URL to the first buttons URL
-        this.defaultSiteURL = buttonInfo.get(0).getURL();
+        if (buttonInfo != null && buttonInfo.get(0) != null)
+            this.defaultSiteURL = buttonInfo.get(0).getURL();
 
         // Adding row constraints
+        if (nbrOfButtons == 0) {
+            rootHolder.getRowConstraints().add(new RowConstraints());
+        }
         for (int i = 0; i < nbrOfButtons; i++) {
             RowConstraints rowConst = new RowConstraints();
             rowConst.setValignment(VPos.CENTER);
@@ -105,14 +112,16 @@ public class ViewController {
             rowConst.setVgrow(Priority.ALWAYS);
             rootHolder.getRowConstraints().add(rowConst);
 
-            // Converting javafx Color to CSS hex
-            Color c = config.getBgColor();
-            String hex = String.format("#%02X%02X%02X",
-                    (int) (c.getRed() * 255),
-                    (int) (c.getGreen() * 255),
-                    (int) (c.getBlue() * 255));
-            rootHolder.setStyle("-fx-background-color:" + hex + ";");
         }
+
+        // Adding bgColor, converting javafx Color to CSS hex
+        Color c = config.getBgColor();
+        String hex = String.format("#%02X%02X%02X",
+                (int) (c.getRed() * 255),
+                (int) (c.getGreen() * 255),
+                (int) (c.getBlue() * 255));
+        rootHolder.setStyle("-fx-background-color:" + hex + ";");
+
         // Adding buttons
         for (int i = 0; i < nbrOfButtons; i++) {
             ButtonInfo bInfo = buttonInfo.get(i);
@@ -134,7 +143,7 @@ public class ViewController {
         webEngine = webView.getEngine();
         webView.setVisible(true);
 
-        rootHolder.add(webView, 1, 0, 1, nbrOfButtons);
+        rootHolder.add(webView, 1, 0, 1, nbrOfButtons == 0 ? 1 : nbrOfButtons);
 
     }
 
@@ -183,6 +192,8 @@ public class ViewController {
         dialogStage.showAndWait();
         if (controller.isPasswordOk()) {
             System.out.println("Pass OK");
+            this.clearListeners();
+            this.mainApp.loadConfigView();
         }
     }
 
@@ -192,5 +203,13 @@ public class ViewController {
             this.idleListener.setStop(true);
         this.idleListener = null;
         this.listenersAreStopped = true;
+    }
+
+    public Main getMainApp() {
+        return mainApp;
+    }
+
+    public void setMainApp(Main mainApp) {
+        this.mainApp = mainApp;
     }
 }
