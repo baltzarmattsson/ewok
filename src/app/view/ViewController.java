@@ -72,11 +72,13 @@ public class ViewController {
         // and tells us that the idle action (switching to default welcome-screen) is false, the user might
         // have switched page
         rootHolder.addEventHandler(MouseEvent.ANY, e -> {
-            idleListener.resetTimeAtLastAction();
+            if (idleListener != null)
+                idleListener.resetTimeAtLastAction();
             this.idleActionIsPerformed = false;
         });
         webView.addEventHandler(MouseEvent.ANY, e -> {
-            idleListener.resetTimeAtLastAction();
+            if (idleListener != null)
+                idleListener.resetTimeAtLastAction();
             this.idleActionIsPerformed = false;
         });
 
@@ -106,8 +108,12 @@ public class ViewController {
         int nbrOfButtons = buttonInfo.size();
 
         // Setting the default URL to the first buttons URL
-        if (buttonInfo != null && buttonInfo.get(0) != null)
-            this.defaultSiteURL = buttonInfo.get(0).getURL();
+        if (buttonInfo != null && buttonInfo.get(0) != null) {
+            if (config.isFirstButtonIsHomescreen())
+                this.defaultSiteURL = buttonInfo.get(0).getURL();
+            else
+                this.defaultSiteURL = config.getHomeScreenURL();
+        }
 
         // Adding row constraints, + 1 for settings button
         for (int i = 0; i < nbrOfButtons; i++) {
@@ -158,11 +164,12 @@ public class ViewController {
 
     private void showWebsite(String URL) {
         webEngine.load(URL);
-        rootHolder.getChildren();
+        System.gc();
     }
 
 
     public void performIdleAction() {
+        System.gc();
         if (idleActionIsPerformed == false) {
             Platform.runLater(() -> showDefaultSite());
             idleActionIsPerformed = true;
@@ -193,6 +200,7 @@ public class ViewController {
         PasswordPromptController controller = loader.getController();
         controller.setDialogStage(dialogStage);
 
+        dialogStage.initOwner(mainApp.getPrimaryStage());
         dialogStage.showAndWait();
         if (controller.isPasswordOk()) {
             System.out.println("Pass OK");

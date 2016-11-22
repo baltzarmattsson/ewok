@@ -35,6 +35,9 @@ public class ConfigReader {
         config.setIdleTimeInSeconds(5);
         config.setFirstColumnPercentWidth(20.0);
 
+        config.setFirstButtonIsHomescreen(true);
+//        config.setHomeScreenURL("https://www.google.se/");
+
         ConfigReader.configInstance = config;
         return config;
     }

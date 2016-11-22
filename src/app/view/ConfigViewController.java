@@ -49,9 +49,6 @@ public class ConfigViewController {
     private GridPane rootHolder;
 
     @FXML
-    private SubScene sceneHolder;
-
-    @FXML
     private GridPane exampleView;
     private ViewController exampleController;
     @FXML
@@ -62,6 +59,7 @@ public class ConfigViewController {
     private Slider widthSlider;
     private CheckBox homeScreenIsFirstButtonCheckbox;
     private TextField homescreenURLTextField;
+    private Label homescreenResponseLabel;
 
     @FXML
     public void initialize() {
@@ -103,6 +101,11 @@ public class ConfigViewController {
 
             // Adding first button is homescreen
             this.homeScreenIsFirstButtonCheckbox.setSelected(config.isFirstButtonIsHomescreen());
+            if (config.isFirstButtonIsHomescreen() == false) {
+                homescreenURLTextField.setVisible(true);
+                homeScreenURL = config.getHomeScreenURL();
+                homescreenResponseLabel.setText(" Nej");
+            }
             this.firstButtonIsHomescreen = config.isFirstButtonIsHomescreen();
 
             // Adding text to homeescreen textfield
@@ -166,11 +169,14 @@ public class ConfigViewController {
         sideBarVbox.getChildren().add(widthSlider);
 
         // Homescreen
-        Label homeScreenIsFirstButtonLabel = new Label("Första knappen är hemskärm\nJa:");
+        Label homeScreenIsFirstButtonLabel = new Label("Första knappen är hemskärm:");
         homeScreenIsFirstButtonLabel.setWrapText(true);
 
         homeScreenIsFirstButtonCheckbox = new CheckBox();
         homeScreenIsFirstButtonCheckbox.setSelected(true);
+
+        HBox homescreenCheckBoxAndLabel = new HBox();
+        homescreenResponseLabel = new Label(" Ja");
 
         homescreenURLTextField = new TextField();
         homescreenURLTextField.setPromptText("URL");
@@ -178,8 +184,7 @@ public class ConfigViewController {
 
         homeScreenIsFirstButtonCheckbox.setOnAction(e -> {
             firstButtonIsHomescreen = homeScreenIsFirstButtonCheckbox.isSelected();
-            String isHomescreenText = firstButtonIsHomescreen ? "Ja" : "Nej";
-            homeScreenIsFirstButtonLabel.setText("Första knappen är hemskärm\n" + isHomescreenText + ":");
+            homescreenResponseLabel.setText(firstButtonIsHomescreen ? " Ja" : " Nej");
             homescreenURLTextField.setVisible(!firstButtonIsHomescreen);
         });
 
@@ -187,8 +192,12 @@ public class ConfigViewController {
             this.homeScreenURL = homescreenURLTextField.getText();
         });
 
+        homescreenCheckBoxAndLabel.getChildren().addAll(homeScreenIsFirstButtonCheckbox, homescreenResponseLabel);
         sideBarVbox.getChildren().add(homeScreenIsFirstButtonLabel);
-        sideBarVbox.getChildren().add(homeScreenIsFirstButtonCheckbox);
+        sideBarVbox.getChildren().add(homescreenCheckBoxAndLabel);
+
+//        sideBarVbox.getChildren().add(homeScreenIsFirstButtonLabel);
+//        sideBarVbox.getChildren().add(homeScreenIsFirstButtonCheckbox);
         sideBarVbox.getChildren().add(homescreenURLTextField);
 
         // Adding update view button
@@ -197,7 +206,7 @@ public class ConfigViewController {
             updateExample();
         });
 
-        sideBarVbox.setMargin(updateViewButton, new Insets(50, 0, 0, 0));
+        sideBarVbox.setMargin(updateViewButton, new Insets(20, 0, 0, 0));
         sideBarVbox.getChildren().add(updateViewButton);
 
         // Adding go back to main view-button
@@ -210,6 +219,15 @@ public class ConfigViewController {
         });
 
         sideBarVbox.getChildren().add(saveAndExitButton);
+
+        // Adding exit application button
+        Button exitApplicationButton = new Button("Avsluta applikation");
+        exitApplicationButton.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+            // TODO save unfinished work
+            System.exit(0);
+        });
+
+        sideBarVbox.getChildren().add(exitApplicationButton);
 
         rootHolder.getColumnConstraints().get(0).setHgrow(Priority.NEVER);
 

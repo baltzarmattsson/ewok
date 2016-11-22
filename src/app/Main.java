@@ -74,7 +74,7 @@ public class Main extends Application {
 //        });
 
 //        this.primaryStage.setAlwaysOnTop(true);
-//        this.primaryStage.setFullScreen(true);
+        this.primaryStage.setFullScreen(true);
         this.primaryStage.show();
 
         // Starting AltTabStopper
@@ -113,12 +113,16 @@ public class Main extends Application {
         Scene scene = new Scene(rootLayout);
         this.primaryStage.setScene(scene);
 
-        this.primaryStage.setMaximized(true);
+//        this.primaryStage.setFullScreen(true);
         this.primaryStage.show();
     }
 
     public static void main(String[] args) {
 //        ConfigReader.readConfig(null);
         launch(args);
+    }
+
+    public Stage getPrimaryStage() {
+        return this.primaryStage;
     }
 }
