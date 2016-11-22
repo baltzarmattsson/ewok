@@ -82,6 +82,7 @@ public class Main extends Application {
         Scene scene = new Scene(rootLayout);
         this.primaryStage.setScene(scene);
 
+        this.primaryStage.setMaximized(true);
         this.primaryStage.show();
     }
 

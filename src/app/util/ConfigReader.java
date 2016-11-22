@@ -14,20 +14,11 @@ import java.util.HashMap;
 public class ConfigReader {
 
     private static Configuration configInstance;
-
     public static final String settingsPwd = "hej123";
 
-//    public static void readConfig(String fileName) {
-//        // TODO filehandling
-
-//    }
-
     public static Configuration getTempConfig() {
-
-        // TODO filehandling
-//        File configFile = new File(fileName);
-//        else
-//            // inform user of wrong file
+        if (configInstance != null)
+            return ConfigReader.configInstance;
 
         Configuration config = new Configuration();
 
@@ -42,11 +33,10 @@ public class ConfigReader {
         config.setButtonInfo(buttonInfo);
         config.setBgColor(Color.WHITESMOKE);
         config.setIdleTimeInSeconds(5);
-        config.setFirstColumnPercentWidth(23.0);
+        config.setFirstColumnPercentWidth(20.0);
 
         ConfigReader.configInstance = config;
         return config;
-
     }
 
 

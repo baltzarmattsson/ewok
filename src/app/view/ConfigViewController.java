@@ -27,6 +27,7 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import jdk.nashorn.internal.runtime.regexp.joni.Config;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,10 +45,11 @@ public class ConfigViewController {
 
     @FXML
     private GridPane rootHolder;
-//    @FXML
-//    private AnchorPane exampleViewHolder;
+    @FXML
+    private AnchorPane exampleViewHolder;
     @FXML
     private GridPane exampleView;
+    private ViewController exampleController;
     @FXML
     private VBox sideBarVbox;
     private VBox buttonVbox;
@@ -60,8 +62,9 @@ public class ConfigViewController {
     @FXML
     public void initialize() {
         this.initializeView();
+        ConfigReader.getTempConfig();
         this.initializeFromConfig(ConfigReader.getConfigInstance());
-        this.showExample();
+//        this.showExample();
     }
 
     public void initializeFromConfig(Configuration config) {
@@ -192,6 +195,9 @@ public class ConfigViewController {
 
         sideBarVbox.setMargin(updateViewButton, new Insets(50, 0, 0, 0));
         sideBarVbox.getChildren().add(updateViewButton);
+
+        rootHolder.getColumnConstraints().get(0).setHgrow(Priority.NEVER);
+
     }
 
     private void addListenerToRemoveButton(Button removeButton) {
@@ -226,26 +232,54 @@ public class ConfigViewController {
     private Configuration generateConfiguration() {
 
         // TODO
-//        Configuration retConfig = new Configuration();
+        Configuration retConfig = new Configuration();
 
 //        retConfig.setButtonInfo(this.buttonInfo);
-//        retConfig.setFirstColumnPercentWidth(this.firstColumnPercentWidth);
-//        retConfig.setIdleTimeInSeconds(this.idleTimeInSeconds);
-//        retConfig.setBgColor(this.bgColor);
-//        retConfig.setHomeScreenURL(this.homeScreenURL);
-//        retConfig.setFirstButtonIsHomescreen(this.firstButtonIsHomescreen);
-//        return retConfig;
 
-        return ConfigReader.getTempConfig();
+        buttonVbox.getChildren();
+        this.buttonInfo = new HashMap<Integer, ButtonInfo>();
+
+        for (int i = 0; i < buttonVbox.getChildren().size(); i++) {
+            Node n = buttonVbox.getChildren().get(i);
+            HBox btnEntryContainer = null;
+            ButtonInfo bi = null;
+            TextField btnText = null;
+            TextField btnURL = null;
+
+            if (n instanceof HBox) {
+                btnEntryContainer = (HBox) n;
+                btnText = (TextField) btnEntryContainer.getChildren().get(0);
+                btnURL = (TextField) btnEntryContainer.getChildren().get(1);
+                bi = new ButtonInfo(btnText.getText(), btnURL.getText());
+                this.buttonInfo.put(i, bi);
+            }
+        }
+        retConfig.setButtonInfo(this.buttonInfo);
+        retConfig.setFirstColumnPercentWidth(this.firstColumnPercentWidth);
+        retConfig.setIdleTimeInSeconds(this.idleTimeInSeconds);
+        retConfig.setBgColor(this.bgColor);
+        retConfig.setHomeScreenURL(this.homeScreenURL);
+        retConfig.setFirstButtonIsHomescreen(this.firstButtonIsHomescreen);
+
+        ConfigReader.setConfigInstance(retConfig);
+        return retConfig;
+
+//        return ConfigReader.getTempConfig();
     }
 
     private void updateExample() {
         Configuration config = this.generateConfiguration();
         ConfigReader.setConfigInstance(config);
+        this.showExample();
     }
 
     private void showExample() {
-        this.updateExample();
+
+        this.rootHolder.getChildren().remove(exampleView);
+        this.exampleView = null;
+        this.exampleController = null;
+        System.gc();
+
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(Main.class.getResource("view/View.fxml"));
         this.exampleView = null;
@@ -255,13 +289,13 @@ public class ConfigViewController {
             e.printStackTrace();
         }
 
-        rootHolder.getColumnConstraints().get(0).setPercentWidth(40.0);
-        rootHolder.getColumnConstraints().get(1).setPercentWidth(60.0);
-        rootHolder.getRowConstraints().get(0).setPercentHeight(100.0);
-
+//        rootHolder.getColumnConstraints().get(0).setPercentWidth(25.0);
+//        rootHolder.getColumnConstraints().get(1).setPercentWidth(75.0);
+//        rootHolder.getRowConstraints().get(0).setPercentHeight(100.0);
+        rootHolder.setGridLinesVisible(true);
 
 //        exampleView.getParent().set
-//        ViewController viewController = loader.getController();
+        exampleController = loader.getController();
 //        Scene scene = new Scene(exampleView);
 
 //        exampleViewHolder.getChildren().add(exampleView);
@@ -270,7 +304,14 @@ public class ConfigViewController {
 //        rootHolder.setHgrow(exampleViewHolder, Priority.ALWAYS);
 //        rootHolder.setVgrow(exampleViewHolder, Priority.ALWAYS);
 
+//        exampleView.prefWidthProperty().bind(rootHolder.widthProperty());
+//        exampleView.prefHeightProperty().bind(rootHolder.heightProperty());
+
+        exampleView.getColumnConstraints().get(0).setHgrow(Priority.NEVER);
+
+        exampleView.getColumnConstraints().get(1).setPercentWidth(100.0 - ConfigReader.getConfigInstance().getFirstColumnPercentWidth());
 
         this.rootHolder.add(exampleView, 1, 0, 1, Integer.MAX_VALUE);
+        System.out.println("brkpnt");
     }
 }

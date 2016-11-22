@@ -69,11 +69,6 @@ public class ViewController {
             idleListener.resetTimeAtLastAction();
             this.idleActionIsPerformed = false;
         });
-        // Removing this because of the robot realising buttons and triggering KeyEvents
-//        rootHolder.addEventHandler(KeyEvent.ANY, e -> {
-//            idleListener.resetTimeAtLastAction();
-//            this.idleActionIsPerformed = false;
-//        });
         webView.addEventHandler(MouseEvent.ANY, e -> {
             idleListener.resetTimeAtLastAction();
             this.idleActionIsPerformed = false;
