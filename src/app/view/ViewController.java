@@ -19,6 +19,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -78,6 +79,13 @@ public class ViewController {
             idleListener.resetTimeAtLastAction();
             this.idleActionIsPerformed = false;
         });
+
+        // Adding listener to shortcut for Settings-password-prompt
+        rootHolder.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
+            if (e.getCode() == KeyCode.F9 && e.isShiftDown()) {
+                this.showPasswordPrompt();
+            }
+        });
     }
 
     private void setupFromConfig(Configuration config) {
@@ -101,17 +109,13 @@ public class ViewController {
         if (buttonInfo != null && buttonInfo.get(0) != null)
             this.defaultSiteURL = buttonInfo.get(0).getURL();
 
-        // Adding row constraints
-        if (nbrOfButtons == 0) {
-            rootHolder.getRowConstraints().add(new RowConstraints());
-        }
+        // Adding row constraints, + 1 for settings button
         for (int i = 0; i < nbrOfButtons; i++) {
             RowConstraints rowConst = new RowConstraints();
             rowConst.setValignment(VPos.CENTER);
             rowConst.setPercentHeight(100.0 / nbrOfButtons);
             rowConst.setVgrow(Priority.ALWAYS);
             rootHolder.getRowConstraints().add(rowConst);
-
         }
 
         // Adding bgColor, converting javafx Color to CSS hex

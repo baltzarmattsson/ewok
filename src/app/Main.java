@@ -38,8 +38,8 @@ public class Main extends Application {
         this.loadWebView();
     }
 
+    // Loading the main kiosk view layout
     public void loadWebView() {
-// Loading the root layout
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(Main.class.getResource("view/View.fxml"));
         try {
