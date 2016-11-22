@@ -40,24 +40,23 @@ public class Main extends Application {
 
     public void loadWebView() {
 // Loading the root layout
-//        FXMLLoader loader = new FXMLLoader();
-//        loader.setLocation(Main.class.getResource("view/View.fxml"));
-//        try {
-//            this.rootLayout = loader.load();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        this.controller = loader.getController();
-//        this.controller.setMainApp(this);
-//
-//        // Getting CSS
-//        String style = Main.class.getResource("view/css/styling.css").toExternalForm();
-//
-//        Scene scene = new Scene(rootLayout);
-//        scene.getStylesheets().add(style);
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(Main.class.getResource("view/View.fxml"));
+        try {
+            this.rootLayout = loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        Scene scene = this.getWebScene();
+        this.controller = loader.getController();
+        this.controller.setMainApp(this);
+
+        // Getting CSS
+        String style = Main.class.getResource("view/css/styling.css").toExternalForm();
+
+        Scene scene = new Scene(rootLayout);
+        scene.getStylesheets().add(style);
+
 
         this.primaryStage.setScene(scene);
         this.primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
@@ -90,9 +89,6 @@ public class Main extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        this.controller = loader.getController();
-        this.controller.setMainApp(this);
 
         // Getting CSS
         String style = Main.class.getResource("view/css/styling.css").toExternalForm();

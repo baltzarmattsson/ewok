@@ -18,6 +18,7 @@ import javafx.geometry.Orientation;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.SubScene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -46,8 +47,10 @@ public class ConfigViewController {
 
     @FXML
     private GridPane rootHolder;
+
     @FXML
-    private AnchorPane exampleViewHolder;
+    private SubScene sceneHolder;
+
     @FXML
     private GridPane exampleView;
     private ViewController exampleController;
@@ -215,6 +218,7 @@ public class ConfigViewController {
         this.exampleView.prefHeightProperty().bind(this.rootHolder.heightProperty());
         this.exampleView.prefWidthProperty().bind(this.rootHolder.widthProperty());
         this.rootHolder.add(exampleView, 1, 0, 1, 1);
+
     }
 
     private void addListenerToRemoveButton(Button removeButton) {
@@ -315,10 +319,15 @@ public class ConfigViewController {
         exampleView.prefWidthProperty().bind(rootHolder.widthProperty());
         exampleView.prefHeightProperty().bind(rootHolder.heightProperty());
 
+        String style = Main.class.getResource("view/css/styling.css").toExternalForm();
+        this.exampleView.getStylesheets().add(style);
+
         rootHolder.add(exampleView, 1, 0, 1, 1);
 
         rootHolder.setGridLinesVisible(true);
-//        exampleView.getColumnConstraints().get(0).setHgrow(Priority.NEVER);
+        exampleView.getColumnConstraints().get(0).setHgrow(Priority.NEVER);
+
+
     }
 
     public Main getMainApp() {
