@@ -42,7 +42,6 @@ public class ConfigViewController {
     private boolean firstButtonIsHomescreen;
     private String homeScreenURL;
 
-
     @FXML
     private GridPane rootHolder;
     @FXML
@@ -198,6 +197,11 @@ public class ConfigViewController {
 
         rootHolder.getColumnConstraints().get(0).setHgrow(Priority.NEVER);
 
+        // Adding a clean gridpane as exampleview
+        this.exampleView = new GridPane();
+        this.exampleView.prefHeightProperty().bind(this.rootHolder.heightProperty());
+        this.exampleView.prefWidthProperty().bind(this.rootHolder.widthProperty());
+        this.rootHolder.add(exampleView, 1, 0, 1, 1);
     }
 
     private void addListenerToRemoveButton(Button removeButton) {
@@ -268,6 +272,10 @@ public class ConfigViewController {
     }
 
     private void updateExample() {
+
+        if (this.exampleController != null)
+            this.exampleController.clearListeners();
+
         Configuration config = this.generateConfiguration();
         ConfigReader.setConfigInstance(config);
         this.showExample();
@@ -275,43 +283,29 @@ public class ConfigViewController {
 
     private void showExample() {
 
-        this.rootHolder.getChildren().remove(exampleView);
-        this.exampleView = null;
-        this.exampleController = null;
-        System.gc();
-
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(Main.class.getResource("view/View.fxml"));
-        this.exampleView = null;
+        this.rootHolder.getChildren().remove(this.exampleView);
         try {
-            exampleView = loader.load();
-        } catch (IOException e) {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-//        rootHolder.getColumnConstraints().get(0).setPercentWidth(25.0);
-//        rootHolder.getColumnConstraints().get(1).setPercentWidth(75.0);
-//        rootHolder.getRowConstraints().get(0).setPercentHeight(100.0);
-        rootHolder.setGridLinesVisible(true);
-
-//        exampleView.getParent().set
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(Main.class.getResource("view/View.fxml"));
+        try {
+            this.exampleView = loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         exampleController = loader.getController();
-//        Scene scene = new Scene(exampleView);
 
-//        exampleViewHolder.getChildren().add(exampleView);
+        exampleView.prefWidthProperty().bind(rootHolder.widthProperty());
+        exampleView.prefHeightProperty().bind(rootHolder.heightProperty());
 
+        rootHolder.add(exampleView, 1, 0, 1, 1);
 
-//        rootHolder.setHgrow(exampleViewHolder, Priority.ALWAYS);
-//        rootHolder.setVgrow(exampleViewHolder, Priority.ALWAYS);
-
-//        exampleView.prefWidthProperty().bind(rootHolder.widthProperty());
-//        exampleView.prefHeightProperty().bind(rootHolder.heightProperty());
-
-        exampleView.getColumnConstraints().get(0).setHgrow(Priority.NEVER);
-
-        exampleView.getColumnConstraints().get(1).setPercentWidth(100.0 - ConfigReader.getConfigInstance().getFirstColumnPercentWidth());
-
-        this.rootHolder.add(exampleView, 1, 0, 1, Integer.MAX_VALUE);
-        System.out.println("brkpnt");
+        rootHolder.setGridLinesVisible(true);
+//        exampleView.getColumnConstraints().get(0).setHgrow(Priority.NEVER);
     }
+
 }

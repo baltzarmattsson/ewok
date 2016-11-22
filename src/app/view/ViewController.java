@@ -8,6 +8,7 @@ import app.util.ConfigReader;
 import app.util.Configuration;
 import app.util.IdleListener;
 import javafx.application.Platform;
+import javafx.event.Event;
 import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -43,8 +44,9 @@ public class ViewController {
     private IdleListener idleListener;
     private boolean idleActionIsPerformed;
     private int idleTimeInSeconds;
-
     private String defaultSiteURL;
+
+    private boolean listenersAreStopped = false;
 
     @FXML
     private GridPane rootHolder;
@@ -153,7 +155,10 @@ public class ViewController {
             idleActionIsPerformed = true;
             System.out.println("Switching to default");
         }
-        this.idleListener = new IdleListener(this, this.idleTimeInSeconds);
+        if (this.listenersAreStopped == false)
+            this.idleListener = new IdleListener(this, this.idleTimeInSeconds);
+        else
+            this.clearListeners();
     }
 
     @FXML
@@ -179,5 +184,13 @@ public class ViewController {
         if (controller.isPasswordOk()) {
             System.out.println("Pass OK");
         }
+    }
+
+    // Used for clearing listeners in the example view, else they continue til the run() is done
+    public void clearListeners() {
+        if (this.idleListener != null)
+            this.idleListener.setStop(true);
+        this.idleListener = null;
+        this.listenersAreStopped = true;
     }
 }

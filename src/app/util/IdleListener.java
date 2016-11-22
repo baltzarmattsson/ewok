@@ -12,10 +12,12 @@ public class IdleListener extends Thread {
 
     private long IDLE_TIME_THRESHOLD_SECONDS;
     private long timeAtLastAction;
+    private boolean stop;
 
     private ViewController controller;
 
     public IdleListener(ViewController controller, int idleTimeInSeconds) {
+        this.stop = false;
         this.setDaemon(true);
         this.start();
         this.controller = controller;
@@ -28,20 +30,23 @@ public class IdleListener extends Thread {
     public void run() {
         long timeSinceLastAction = timeAtLastAction - System.currentTimeMillis();
 
-        while (TimeUnit.MILLISECONDS.toSeconds(timeSinceLastAction) < IDLE_TIME_THRESHOLD_SECONDS) {
+        while (TimeUnit.MILLISECONDS.toSeconds(timeSinceLastAction) < IDLE_TIME_THRESHOLD_SECONDS && this.stop == false) {
             try {
                 this.sleep(TimeUnit.SECONDS.toMillis(1));
                 timeSinceLastAction = System.currentTimeMillis() - timeAtLastAction;
-                System.out.println(TimeUnit.MILLISECONDS.toSeconds(timeSinceLastAction) + "s since last action");
+                System.out.println(TimeUnit.MILLISECONDS.toSeconds(timeSinceLastAction) + "s since last action" + this.hashCode());
             } catch (InterruptedException e) {
             }
         }
 //        System.out.println("Requesting idle action from Controller @IdleListener:38");
         this.controller.performIdleAction();
-
     }
 
     public void resetTimeAtLastAction() {
         this.timeAtLastAction = System.currentTimeMillis();
+    }
+
+    public void setStop(boolean stop) {
+        this.stop = stop;
     }
 }
