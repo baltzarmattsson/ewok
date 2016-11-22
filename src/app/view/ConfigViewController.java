@@ -44,8 +44,8 @@ public class ConfigViewController {
 
     @FXML
     private GridPane rootHolder;
-    @FXML
-    private AnchorPane exampleViewHolder;
+//    @FXML
+//    private AnchorPane exampleViewHolder;
     @FXML
     private GridPane exampleView;
     @FXML
@@ -254,14 +254,21 @@ public class ConfigViewController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        rootHolder.getColumnConstraints().get(0).setPercentWidth(40.0);
+        rootHolder.getColumnConstraints().get(1).setPercentWidth(60.0);
+        rootHolder.getRowConstraints().get(0).setPercentHeight(100.0);
+
+
+//        exampleView.getParent().set
 //        ViewController viewController = loader.getController();
 //        Scene scene = new Scene(exampleView);
 
 //        exampleViewHolder.getChildren().add(exampleView);
 
 
-        rootHolder.setHgrow(exampleViewHolder, Priority.ALWAYS);
-        rootHolder.setVgrow(exampleViewHolder, Priority.ALWAYS);
+//        rootHolder.setHgrow(exampleViewHolder, Priority.ALWAYS);
+//        rootHolder.setVgrow(exampleViewHolder, Priority.ALWAYS);
 
 
         this.rootHolder.add(exampleView, 1, 0, 1, Integer.MAX_VALUE);

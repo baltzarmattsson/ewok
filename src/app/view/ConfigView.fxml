@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
@@ -9,8 +8,8 @@
 
 <GridPane fx:id="rootHolder" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="590.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.view.ConfigViewController">
    <columnConstraints>
-      <ColumnConstraints hgrow="NEVER" maxWidth="300.0" minWidth="50.0" prefWidth="237.0" />
-      <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="353.0" />
+      <ColumnConstraints hgrow="NEVER" maxWidth="300.0" minWidth="50.0" percentWidth="40.0" prefWidth="237.0" />
+      <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" percentWidth="60.0" prefWidth="353.0" />
    </columnConstraints>
    <rowConstraints>
       <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="546.0" vgrow="ALWAYS" />
@@ -21,17 +20,13 @@
             <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
          </padding>
       </VBox>
-      <AnchorPane fx:id="exampleViewHolder" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
-         <children>
-            <GridPane fx:id="exampleView" prefHeight="600.0" prefWidth="353.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
-              </rowConstraints>
-            </GridPane>
-         </children>
-      </AnchorPane>
+      <GridPane fx:id="exampleView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+        </rowConstraints>
+      </GridPane>
    </children>
 </GridPane>
