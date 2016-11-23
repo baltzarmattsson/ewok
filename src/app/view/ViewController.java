@@ -48,7 +48,7 @@ public class ViewController {
 
     @FXML
     private void initialize() {
-        ConfigReader.readConfigurationFile();
+        //ConfigReader.readConfigurationFile();
         Configuration config = ConfigReader.getConfigInstance();
         if (config != null) {
             this.setupFromConfig(config);

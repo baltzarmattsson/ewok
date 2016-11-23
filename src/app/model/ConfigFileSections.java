@@ -22,11 +22,11 @@ public enum ConfigFileSections {
     HOMESCREENURL_END ("#HOMESCREENURL_END"),
 
     // BUTTONINFO instances
-    BI_START ("+BI+"),
-    BI_END ("-BI-"),
-    BI_INDEX ("+BI_INDEX "), // Is written in this order, index, text, url
-    BI_TEXT ("+BI_TEXT "),
-    BI_URL ("+BI_URL ");
+    BI_START ("###BI_START###"),
+    BI_END ("###BI_END###"),
+    BI_INDEX ("##BI_INDEX "), // Is written in this order, index, text, url
+    BI_TEXT ("##BI_TEXT "),
+    BI_URL ("##BI_URL ");
 
     private final String name;
 

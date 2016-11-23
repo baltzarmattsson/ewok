@@ -3,14 +3,11 @@ package app.util;
 // Used to read config from a file and set the UI and the idle-timer accordingly
 
 import app.Main;
-import app.model.ButtonInfo;
 import app.model.Configuration;
-import javafx.scene.paint.Color;
 
 import java.io.*;
 import java.util.HashMap;
 
-import static com.apple.eio.FileManager.getResource;
 
 public class ConfigReader {
 

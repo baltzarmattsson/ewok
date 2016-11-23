@@ -156,7 +156,7 @@ public class Util {
         for (int i = 0; i < biAsText.size(); i++) {
             String currentLine = biAsText.get(i);
 
-            if (currentLine.equals(ConfigFileSections.BI_START)) {
+            if (currentLine.equals(ConfigFileSections.BI_START.get())) {
 
                 currentLine = biAsText.get(++i);
                 String index = null, text = null, url = null;
@@ -169,7 +169,7 @@ public class Util {
                         text = currentLine.replaceFirst(ConfigFileSections.BI_TEXT.get(), "");
                     else if (currentLine.contains(ConfigFileSections.BI_URL.get()))
                         url = currentLine.replaceFirst(ConfigFileSections.BI_URL.get(), "");
-                    ++i;
+                    currentLine = biAsText.get(++i);
                 }
                 if (index != null && text != null && url != null) {
                     bi = new ButtonInfo(text, url);
