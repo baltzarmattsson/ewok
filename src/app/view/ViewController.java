@@ -3,35 +3,27 @@ package app.view;
 // Controls all the user events in the buttons-browser-view
 
 import app.Main;
-import app.util.ButtonInfo;
+import app.model.ButtonInfo;
 import app.util.ConfigReader;
-import app.util.Configuration;
+import app.model.Configuration;
 import app.util.IdleListener;
+import app.util.Util;
 import javafx.application.Platform;
-import javafx.event.Event;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ColorPicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.text.Font;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import jdk.nashorn.internal.runtime.regexp.joni.Config;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -109,7 +101,7 @@ public class ViewController {
 
         // Setting the default URL to the first buttons URL
         if (buttonInfo != null && buttonInfo.get(0) != null) {
-            if (config.isFirstButtonIsHomescreen())
+            if (config.isFirstButtonHomescreen())
                 this.defaultSiteURL = buttonInfo.get(0).getURL();
             else
                 this.defaultSiteURL = config.getHomeScreenURL();
@@ -126,10 +118,11 @@ public class ViewController {
 
         // Adding bgColor, converting javafx Color to CSS hex
         Color c = config.getBgColor();
-        String hex = String.format("#%02X%02X%02X",
-                (int) (c.getRed() * 255),
-                (int) (c.getGreen() * 255),
-                (int) (c.getBlue() * 255));
+        String hex = Util.colorToHex(c);
+//        String hex = String.format("#%02X%02X%02X",
+//                (int) (c.getRed() * 255),
+//                (int) (c.getGreen() * 255),
+//                (int) (c.getBlue() * 255));
         rootHolder.setStyle("-fx-background-color:" + hex + ";");
 
         // Adding buttons

@@ -1,4 +1,4 @@
-package app.util;
+package app.model;
 
 import javafx.scene.paint.Color;
 
@@ -66,7 +66,7 @@ public class Configuration {
         this.homeScreenURL = homeScreenURL;
     }
 
-    public boolean isFirstButtonIsHomescreen() {
+    public boolean isFirstButtonHomescreen() {
         return firstButtonIsHomescreen;
     }
 

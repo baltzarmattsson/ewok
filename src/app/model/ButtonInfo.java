@@ -1,4 +1,4 @@
-package app.util;
+package app.model;
 
 // Used to hold information about buttons, i.e. text, URL
 public class ButtonInfo {

@@ -2,19 +2,19 @@ package app.util;
 
 // Used to read config from a file and set the UI and the idle-timer accordingly
 
+import app.Main;
+import app.model.ButtonInfo;
+import app.model.Configuration;
 import javafx.scene.paint.Color;
-import jdk.nashorn.internal.runtime.regexp.joni.Config;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.util.HashMap;
+import java.io.*;
+import java.util.HashMap;import static com.apple.eio.FileManager.getResource;
 
 public class ConfigReader {
 
     private static Configuration configInstance;
     public static final String settingsPwd = "hej123";
+
 
     public static Configuration getTempConfig() {
         if (configInstance != null)
@@ -40,6 +40,45 @@ public class ConfigReader {
 
         ConfigReader.configInstance = config;
         return config;
+    }
+
+    public static void readConfigurationFile() throws FileNotFoundException {
+        BufferedReader br;
+        br = new BufferedReader(new FileReader(new File(Main.class.getResource("config/config.txt").getFile())));
+//			br = new BufferedReader(new InputStreamReader(new FileInputStream(Main.class.getResource("/text/firstNames.txt").getFile()), StandardCharsets.UTF_8));
+
+        String s;
+        Configuration readConfig;
+        try {
+            while ((s = br.readLine()) != null) {
+
+                System.out.println(s);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // ConfigReader.configInstance = readConfig;
+
+    }
+
+    public static void saveConfigurationFile(Configuration config) {
+        BufferedWriter br = null;
+        try {
+            br = new BufferedWriter(new FileWriter(new File(Main.class.getResource("config/config.txt").getFile())));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                br.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        // ConfigReader.configInstance = savedConfig;s
     }
 
 

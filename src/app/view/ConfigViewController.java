@@ -3,32 +3,20 @@ package app.view;
 // Controls all the user events in the view
 
 import app.Main;
-import app.util.ButtonInfo;
+import app.model.ButtonInfo;
 import app.util.ConfigReader;
-import app.util.Configuration;
-import app.util.IdleListener;
-import javafx.application.Platform;
-import javafx.event.EventHandler;
-import javafx.event.EventType;
+import app.model.Configuration;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
-import javafx.geometry.VPos;
 import javafx.scene.Node;
-import javafx.scene.Scene;
-import javafx.scene.SubScene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.web.WebEngine;
-import javafx.scene.web.WebView;
-import jdk.nashorn.internal.runtime.regexp.joni.Config;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,6 +35,9 @@ public class ConfigViewController {
 
     @FXML
     private GridPane rootHolder;
+
+    @FXML
+    private GridPane exampleHolder;
 
     @FXML
     private GridPane exampleView;
@@ -229,13 +220,17 @@ public class ConfigViewController {
 
         sideBarVbox.getChildren().add(exitApplicationButton);
 
-        rootHolder.getColumnConstraints().get(0).setHgrow(Priority.NEVER);
+//        rootHolder.getColumnConstraints().get(0).setHgrow(Priority.NEVER);
 
         // Adding a clean gridpane as exampleview
         this.exampleView = new GridPane();
-        this.exampleView.prefHeightProperty().bind(this.rootHolder.heightProperty());
-        this.exampleView.prefWidthProperty().bind(this.rootHolder.widthProperty());
-        this.rootHolder.add(exampleView, 1, 0, 1, 1);
+        this.exampleHolder.add(exampleView, 0, 0, 1, 1);
+//        this.exampleView.prefHeightProperty().bind(this.rootHolder.heightProperty());
+//        this.exampleView.prefWidthProperty().bind(this.rootHolder.widthProperty());
+//        this.exampleView.prefHeightProperty().bind(rootHolder.getColumnConstraints().get(1).prefWidthProperty());
+//        this.exampleView.prefWidthProperty().bind(rootHolder.getRowConstraints().get(0).prefHeightProperty());
+//        this.exampleView.setGridLinesVisible(true);
+//        this.rootHolder.add(exampleView, 1, 0, 1, 1);
 
     }
 
@@ -334,18 +329,31 @@ public class ConfigViewController {
         }
         exampleController = loader.getController();
 
-        exampleView.prefWidthProperty().bind(rootHolder.widthProperty());
-        exampleView.prefHeightProperty().bind(rootHolder.heightProperty());
+//        exampleView.prefWidthProperty().bind(rootHolder.widthProperty());
+//        exampleView.prefHeightProperty().bind(rootHolder.heightProperty());
+//        this.exampleView.prefHeightProperty().bind(this.rootHolder.heightProperty());
+//        this.exampleView.prefWidthProperty().bind(this.rootHolder.widthProperty());
+//        this.exampleView.prefHeightProperty().bind(rootHolder.getColumnConstraints().get(1).prefWidthProperty());
+//        this.exampleView.prefWidthProperty().bind(rootHolder.getRowConstraints().get(0).prefHeightProperty());
+//        this.exampleView.prefWidthProperty().bind(rootHolder.getRowConstraints().get(0).heigh
+        exampleView.setGridLinesVisible(true);
 
+//        rootHolder.setFillHeight(exampleView, true);
+//        rootHolder.setFillWidth(exampleView, true);
         String style = Main.class.getResource("view/css/styling.css").toExternalForm();
         this.exampleView.getStylesheets().add(style);
+
+        // fillwidth
+        GridPane.setFillHeight(exampleView, true);
+        GridPane.setFillHeight(exampleView, true);
+        GridPane.setHgrow(exampleView, Priority.ALWAYS);
+        GridPane.setVgrow(exampleView, Priority.ALWAYS);
+
+        exampleView.setPrefSize(500, 500);
 
         rootHolder.add(exampleView, 1, 0, 1, 1);
 
         rootHolder.setGridLinesVisible(true);
-        exampleView.getColumnConstraints().get(0).setHgrow(Priority.NEVER);
-
-
     }
 
     public Main getMainApp() {
