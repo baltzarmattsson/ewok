@@ -66,18 +66,21 @@ public class ConfigReader {
     }
 
     public static void saveConfigurationFile(Configuration config) {
-        BufferedWriter br = null;
+        BufferedWriter bw = null;
         try {
-            br = new BufferedWriter(new FileWriter(new File(Main.class.getResource("config/config.txt").getFile())));
+            bw = new BufferedWriter(new FileWriter(new File(Main.class.getResource("config/config.txt").getFile())));
+            // Kolla ifall config är null
             HashMap<Integer, String> configAsText = Util.parseConfigToString(config);
             for (int i = 0; i < configAsText.size(); i++) {
-                br.write(configAsText.get(i));
+                System.out.println(i);
+                bw.write(configAsText.get(i) + "\n");
             }
+            bw.close();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
             try {
-                br.close();
+                bw.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }

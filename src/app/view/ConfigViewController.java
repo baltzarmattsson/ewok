@@ -194,7 +194,7 @@ public class ConfigViewController {
         // Adding update view button
         Button updateViewButton = new Button("Uppdatera exempel");
         updateViewButton.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-            updateExample();
+            this.updateExample();
         });
 
         sideBarVbox.setMargin(updateViewButton, new Insets(20, 0, 0, 0));
@@ -314,11 +314,6 @@ public class ConfigViewController {
     private void showExample() {
 
         this.rootHolder.getChildren().remove(this.exampleView);
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
 
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(Main.class.getResource("view/View.fxml"));

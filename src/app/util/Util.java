@@ -48,10 +48,10 @@ public class Util {
 
         // Reading homescreen url
         configText.put(indexCounter++, ConfigFileSections.HOMESCREENURL_START.get());
-        configText.put(indexCounter++, configToBeParsed.getHomeScreenURL());
+        configText.put(indexCounter++, configToBeParsed.getHomeScreenURL() == null ? "" : configToBeParsed.getHomeScreenURL());
         configText.put(indexCounter++, ConfigFileSections.HOMESCREENURL_END.get());
 
-        return null;
+        return configText;
     }
 
     private static HashMap<Integer, String> buttonInfoToString(HashMap<Integer, ButtonInfo> buttonInfos) {
