@@ -48,13 +48,10 @@ public class ViewController {
 
     @FXML
     private void initialize() {
-        //ConfigReader.readConfigurationFile();
         Configuration config = ConfigReader.getConfigInstance();
         if (config != null) {
             this.setupFromConfig(config);
-
             this.showDefaultSite();
-
         }
         this.addListeners();
     }
@@ -99,6 +96,7 @@ public class ViewController {
         // Adding two columns to the view, first with getFirstColumnPercentWidth from ConfigReader
         ColumnConstraints cc = new ColumnConstraints();
         cc.setPercentWidth(config.getFirstColumnPercentWidth());
+        cc.setHalignment(HPos.CENTER);
         rootHolder.getColumnConstraints().add(cc);
         rootHolder.getColumnConstraints().add(new ColumnConstraints());
 
@@ -117,6 +115,7 @@ public class ViewController {
                 this.defaultSiteURL = config.getHomeScreenURL();
         }
 
+        // Setting default URL page, according to if the first button is homeURL or not
         if (config.isFirstButtonHomescreen() && buttonInfo != null && buttonInfo.get(0) != null) {
             this.defaultSiteURL = buttonInfo.get(0).getURL();
         } else if (config.getHomeScreenURL() != null) {
@@ -125,7 +124,7 @@ public class ViewController {
             this.defaultSiteURL = "";
         }
 
-        // Adding row constraints, + 1 for settings button
+        // Adding row constraints
         if (nbrOfButtons > 0) {
             for (int i = 0; i < nbrOfButtons; i++) {
                 RowConstraints rowConst = new RowConstraints();
@@ -135,6 +134,7 @@ public class ViewController {
                 rootHolder.getRowConstraints().add(rowConst);
             }
         } else {
+            // If there's no buttons = no rows, but we still want at least one row to work with, thus adding this below
             rootHolder.getRowConstraints().add(new RowConstraints());
         }
 
@@ -145,11 +145,6 @@ public class ViewController {
             hex = Util.colorToHex(c);
         else
             hex = Util.colorToHex(Color.WHITE);
-
-//        String hex = String.format("#%02X%02X%02X",
-//                (int) (c.getRed() * 255),
-//                (int) (c.getGreen() * 255),
-//                (int) (c.getBlue() * 255));
         rootHolder.setStyle("-fx-background-color:" + hex + ";");
 
         // Adding buttons
@@ -165,8 +160,8 @@ public class ViewController {
             rootHolder.add(button, 0, i);
         }
 
-        // Centers the buttons horizontally
-        rootHolder.getColumnConstraints().get(0).setHalignment(HPos.CENTER);
+//        // Centers the buttons horizontally TODO REMOVE
+//        rootHolder.getColumnConstraints().get(0).setHalignment(HPos.CENTER);
 
         // Adding web view
         webView = new WebView();
@@ -174,6 +169,12 @@ public class ViewController {
         webView.setVisible(true);
 
         rootHolder.add(webView, 1, 0, 1, nbrOfButtons == 0 ? 1 : nbrOfButtons);
+
+    }
+
+    private void applyGridpaneRules() {
+//        // Centers the buttons horizontally
+//        rootHolder.getColumnConstraints().get(0).setHalignment(HPos.CENTER);
 
     }
 
@@ -244,4 +245,7 @@ public class ViewController {
     public void setMainApp(Main mainApp) {
         this.mainApp = mainApp;
     }
+
+
+
 }

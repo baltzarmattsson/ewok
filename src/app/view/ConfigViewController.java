@@ -9,6 +9,7 @@ import app.model.Configuration;
 import app.util.Util;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
@@ -195,6 +196,7 @@ public class ConfigViewController {
         Button updateViewButton = new Button("Uppdatera exempel");
         updateViewButton.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
             this.updateExample();
+            this.applyRulesToGridpanes();
         });
 
         sideBarVbox.setMargin(updateViewButton, new Insets(20, 0, 0, 0));
@@ -231,6 +233,8 @@ public class ConfigViewController {
 //        this.exampleView.prefWidthProperty().bind(rootHolder.getRowConstraints().get(0).prefHeightProperty());
 //        this.exampleView.setGridLinesVisible(true);
 //        this.rootHolder.add(exampleView, 1, 0, 1, 1);
+
+        System.out.println("KOMIGEN");
 
     }
 
@@ -324,14 +328,12 @@ public class ConfigViewController {
         }
         exampleController = loader.getController();
 
-//        exampleView.prefWidthProperty().bind(rootHolder.widthProperty());
-//        exampleView.prefHeightProperty().bind(rootHolder.heightProperty());
-//        this.exampleView.prefHeightProperty().bind(this.rootHolder.heightProperty());
-//        this.exampleView.prefWidthProperty().bind(this.rootHolder.widthProperty());
+        this.exampleView.prefHeightProperty().bind(this.rootHolder.heightProperty());
+        this.exampleView.prefWidthProperty().bind(this.rootHolder.widthProperty());
 //        this.exampleView.prefHeightProperty().bind(rootHolder.getColumnConstraints().get(1).prefWidthProperty());
 //        this.exampleView.prefWidthProperty().bind(rootHolder.getRowConstraints().get(0).prefHeightProperty());
 //        this.exampleView.prefWidthProperty().bind(rootHolder.getRowConstraints().get(0).heigh
-        exampleView.setGridLinesVisible(true);
+//        exampleView.setGridLinesVisible(true);
 
 //        rootHolder.setFillHeight(exampleView, true);
 //        rootHolder.setFillWidth(exampleView, true);
@@ -344,7 +346,7 @@ public class ConfigViewController {
         GridPane.setHgrow(exampleView, Priority.ALWAYS);
         GridPane.setVgrow(exampleView, Priority.ALWAYS);
 
-        exampleView.setPrefSize(500, 500);
+//        exampleView.setPrefSize(500, 500);
 
         rootHolder.add(exampleView, 1, 0, 1, 1);
 
@@ -357,5 +359,39 @@ public class ConfigViewController {
 
     public void setMainApp(Main mainApp) {
         this.mainApp = mainApp;
+    }
+
+    private void applyRulesToGridpanes() {
+
+        // Rootholder
+        RowConstraints row1 = this.rootHolder.getRowConstraints().get(0);
+        row1.setPercentHeight(-1.0);
+        row1.setMinHeight(10.0);
+        row1.setPrefHeight(30.0);
+        row1.setMaxHeight(-1.0);
+        row1.setVgrow(Priority.SOMETIMES);
+        row1.setFillHeight(true);
+        row1.setValignment(null);
+
+        ColumnConstraints col2 = this.rootHolder.getColumnConstraints().get(1);
+        col2.setHgrow(Priority.SOMETIMES);
+        col2.setFillWidth(true);
+        col2.setHalignment(null);
+
+        // Exampleview
+        for (RowConstraints row : exampleView.getRowConstraints()) {
+            row.setVgrow(Priority.SOMETIMES);
+            row.setValignment(null);
+            row.setFillHeight(true);
+        }
+        col2 = this.exampleView.getColumnConstraints().get(1);
+        col2.setHgrow(Priority.SOMETIMES);
+        col2.setFillWidth(true);
+        col2.setHalignment(null);
+        ColumnConstraints col1 = this.exampleView.getColumnConstraints().get(0);
+        col1.setHgrow(Priority.SOMETIMES);
+        col1.setHalignment(HPos.CENTER);
+        col1.setFillWidth(true);
+
     }
 }
