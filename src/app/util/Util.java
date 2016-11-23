@@ -13,13 +13,6 @@ public class Util {
 
     public static HashMap<Integer, String> parseConfigToString(Configuration configToBeParsed) {
 
-//        private HashMap<Integer, ButtonInfo> buttonInfo = new HashMap<Integer, ButtonInfo>();
-//        private int idleTimeInSeconds;
-//        private Color bgColor;
-//        private double firstColumnPercentWidth;
-//        private String homeScreenURL;
-//        private boolean firstButtonIsHomescreen;
-
         HashMap<Integer, String> configText = new HashMap<Integer, String>();
         int indexCounter = 0;
 

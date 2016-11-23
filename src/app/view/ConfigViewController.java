@@ -6,6 +6,7 @@ import app.Main;
 import app.model.ButtonInfo;
 import app.util.ConfigReader;
 import app.model.Configuration;
+import app.util.Util;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -55,9 +56,8 @@ public class ConfigViewController {
     @FXML
     public void initialize() {
         this.initializeView();
-        ConfigReader.getTempConfig();
+        ConfigReader.readConfigurationFile();
         this.initializeFromConfig(ConfigReader.getConfigInstance());
-//        this.showExample();
     }
 
     public void initializeFromConfig(Configuration config) {
@@ -66,7 +66,7 @@ public class ConfigViewController {
             this.bgColor = config.getBgColor();
             this.idleTimeInSeconds = config.getIdleTimeInSeconds();
             this.firstColumnPercentWidth = config.getFirstColumnPercentWidth();
-            this.firstButtonIsHomescreen = config.isFirstButtonIsHomescreen();
+            this.firstButtonIsHomescreen = config.isFirstButtonHomescreen();
             this.homeScreenURL = config.getHomeScreenURL();
 
             // Adding buttons
@@ -91,13 +91,13 @@ public class ConfigViewController {
             this.firstColumnPercentWidth = config.getFirstColumnPercentWidth();
 
             // Adding first button is homescreen
-            this.homeScreenIsFirstButtonCheckbox.setSelected(config.isFirstButtonIsHomescreen());
-            if (config.isFirstButtonIsHomescreen() == false) {
+            this.homeScreenIsFirstButtonCheckbox.setSelected(config.isFirstButtonHomescreen());
+            if (config.isFirstButtonHomescreen() == false) {
                 homescreenURLTextField.setVisible(true);
                 homeScreenURL = config.getHomeScreenURL();
                 homescreenResponseLabel.setText(" Nej");
             }
-            this.firstButtonIsHomescreen = config.isFirstButtonIsHomescreen();
+            this.firstButtonIsHomescreen = config.isFirstButtonHomescreen();
 
             // Adding text to homeescreen textfield
             this.homescreenURLTextField.setText(config.getHomeScreenURL());
@@ -263,13 +263,16 @@ public class ConfigViewController {
         return hbox;
     }
 
-    private Configuration saveConfiguration() {
+    private void saveConfiguration() {
+        Configuration generatedConf = this.generateConfiguration();
+        ConfigReader.saveConfigurationFile(generatedConf);
+    }
 
-        // TODO
+    private Configuration generateConfiguration() {
+
         Configuration retConfig = new Configuration();
 
-//        retConfig.setButtonInfo(this.buttonInfo);
-
+        // Adding button info based on the text+url-entries in the view (i.e. added button entries)
         buttonVbox.getChildren();
         this.buttonInfo = new HashMap<Integer, ButtonInfo>();
 
@@ -295,10 +298,7 @@ public class ConfigViewController {
         retConfig.setHomeScreenURL(this.homeScreenURL);
         retConfig.setFirstButtonIsHomescreen(this.firstButtonIsHomescreen);
 
-        ConfigReader.setConfigInstance(retConfig);
         return retConfig;
-
-//        return ConfigReader.getTempConfig();
     }
 
     private void updateExample() {
@@ -306,7 +306,7 @@ public class ConfigViewController {
         if (this.exampleController != null)
             this.exampleController.clearListeners();
 
-        Configuration config = this.saveConfiguration();
+        Configuration config = this.generateConfiguration();
         ConfigReader.setConfigInstance(config);
         this.showExample();
     }

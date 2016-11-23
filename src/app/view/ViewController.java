@@ -48,45 +48,51 @@ public class ViewController {
 
     @FXML
     private void initialize() {
-//        Configuration config = ConfigReader.getConfigInstance();
-        Configuration config = ConfigReader.getTempConfig();
+        ConfigReader.readConfigurationFile();
+        Configuration config = ConfigReader.getConfigInstance();
         if (config != null) {
             this.setupFromConfig(config);
 
-            this.addListeners();
             this.showDefaultSite();
 
         }
+        this.addListeners();
     }
 
     private void addListeners() {
         // Adding listeners to both mouse and keyboard-events, resets timeSinceLastAction in the listener thread
         // and tells us that the idle action (switching to default welcome-screen) is false, the user might
         // have switched page
-        rootHolder.addEventHandler(MouseEvent.ANY, e -> {
-            if (idleListener != null)
-                idleListener.resetTimeAtLastAction();
-            this.idleActionIsPerformed = false;
-        });
-        webView.addEventHandler(MouseEvent.ANY, e -> {
-            if (idleListener != null)
-                idleListener.resetTimeAtLastAction();
-            this.idleActionIsPerformed = false;
-        });
+        if (rootHolder != null)
+            rootHolder.addEventHandler(MouseEvent.ANY, e -> {
+                if (idleListener != null)
+                    idleListener.resetTimeAtLastAction();
+                this.idleActionIsPerformed = false;
+            });
+        if (webView != null)
+            webView.addEventHandler(MouseEvent.ANY, e -> {
+                if (idleListener != null)
+                    idleListener.resetTimeAtLastAction();
+                this.idleActionIsPerformed = false;
+            });
 
-        // Adding listener to shortcut for Settings-password-prompt
-        rootHolder.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
-            if (e.getCode() == KeyCode.F9 && e.isShiftDown()) {
-                this.showPasswordPrompt();
-            }
-        });
+        if (rootHolder != null) {
+            System.out.println("adding listener");
+            // Adding listener to shortcut for Settings-password-prompt
+            rootHolder.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
+                if (e.getCode() == KeyCode.F9 && e.isShiftDown()) {
+                    this.showPasswordPrompt();
+                }
+            });
+        }
     }
 
     private void setupFromConfig(Configuration config) {
 
-        this.idleListener = new IdleListener(this, config.getIdleTimeInSeconds());
-        this.idleTimeInSeconds = config.getIdleTimeInSeconds();
-
+        if (config.getIdleTimeInSeconds() > 0) {
+            this.idleListener = new IdleListener(this, config.getIdleTimeInSeconds());
+            this.idleTimeInSeconds = config.getIdleTimeInSeconds();
+        }
         rootHolder.getRowConstraints().clear();
         rootHolder.getColumnConstraints().clear();
 
@@ -96,8 +102,12 @@ public class ViewController {
         rootHolder.getColumnConstraints().add(cc);
         rootHolder.getColumnConstraints().add(new ColumnConstraints());
 
-        HashMap<Integer, ButtonInfo> buttonInfo = config.getButtonInfo();
-        int nbrOfButtons = buttonInfo.size();
+        HashMap<Integer, ButtonInfo> buttonInfo = null;
+        int nbrOfButtons = 0;
+        if (config.getButtonInfo() != null) {
+            buttonInfo = config.getButtonInfo();
+            nbrOfButtons = buttonInfo.size();
+        }
 
         // Setting the default URL to the first buttons URL
         if (buttonInfo != null && buttonInfo.get(0) != null) {
@@ -107,18 +117,35 @@ public class ViewController {
                 this.defaultSiteURL = config.getHomeScreenURL();
         }
 
+        if (config.isFirstButtonHomescreen() && buttonInfo != null && buttonInfo.get(0) != null) {
+            this.defaultSiteURL = buttonInfo.get(0).getURL();
+        } else if (config.getHomeScreenURL() != null) {
+            this.defaultSiteURL = config.getHomeScreenURL();
+        } else {
+            this.defaultSiteURL = "";
+        }
+
         // Adding row constraints, + 1 for settings button
-        for (int i = 0; i < nbrOfButtons; i++) {
-            RowConstraints rowConst = new RowConstraints();
-            rowConst.setValignment(VPos.CENTER);
-            rowConst.setPercentHeight(100.0 / nbrOfButtons);
-            rowConst.setVgrow(Priority.ALWAYS);
-            rootHolder.getRowConstraints().add(rowConst);
+        if (nbrOfButtons > 0) {
+            for (int i = 0; i < nbrOfButtons; i++) {
+                RowConstraints rowConst = new RowConstraints();
+                rowConst.setValignment(VPos.CENTER);
+                rowConst.setPercentHeight(100.0 / nbrOfButtons);
+                rowConst.setVgrow(Priority.ALWAYS);
+                rootHolder.getRowConstraints().add(rowConst);
+            }
+        } else {
+            rootHolder.getRowConstraints().add(new RowConstraints());
         }
 
         // Adding bgColor, converting javafx Color to CSS hex
         Color c = config.getBgColor();
-        String hex = Util.colorToHex(c);
+        String hex = null;
+        if (c != null)
+            hex = Util.colorToHex(c);
+        else
+            hex = Util.colorToHex(Color.WHITE);
+
 //        String hex = String.format("#%02X%02X%02X",
 //                (int) (c.getRed() * 255),
 //                (int) (c.getGreen() * 255),
