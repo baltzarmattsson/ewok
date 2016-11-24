@@ -7,6 +7,7 @@ import app.model.ButtonInfo;
 import app.util.ConfigReader;
 import app.model.Configuration;
 import app.util.fontpicker.FontPicker;
+import app.util.fontpicker.FontPickerContent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;

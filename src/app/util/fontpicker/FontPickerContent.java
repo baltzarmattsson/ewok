@@ -59,6 +59,7 @@ public class FontPickerContent extends GridPane {
         initGui();
     }
 
+
     private void initGui() {
         setPrefSize(200, 230);
         getStylesheets().add(getClass().getResource("font-picker.css").toExternalForm());
@@ -157,7 +158,7 @@ public class FontPickerContent extends GridPane {
         changeFont();
     }
 
-    private void changeFont() {
+    public void changeFont() {
         FontWeight weight = boldCheckBox.isSelected() ? FontWeight.BOLD : FontWeight.NORMAL;
         FontPosture posture = italicCheckBox.isSelected() ? FontPosture.ITALIC : FontPosture.REGULAR;
         int size = sizeSpinner.getValue();
