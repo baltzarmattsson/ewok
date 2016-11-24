@@ -34,7 +34,7 @@ public class IdleListener extends Thread {
             try {
                 this.sleep(TimeUnit.SECONDS.toMillis(1));
                 timeSinceLastAction = System.currentTimeMillis() - timeAtLastAction;
-                System.out.print(TimeUnit.MILLISECONDS.toSeconds(timeSinceLastAction) + "s ");
+//                System.out.print(TimeUnit.MILLISECONDS.toSeconds(timeSinceLastAction) + "s ");
             } catch (InterruptedException e) {
             }
         }

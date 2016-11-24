@@ -21,7 +21,6 @@ public class AltTabStopper implements Runnable
     public static AltTabStopper create() {
         boolean isWindows = System.getProperty("os.name").toLowerCase().contains("win");
         boolean isMac = (isWindows) ? false : System.getProperty("os.name").toLowerCase().contains("mac") ? true : false;
-        System.out.println("isMac " + isMac);
         AltTabStopper stopper = new AltTabStopper(isWindows, isMac);
         new Thread(stopper, "Alt-Tab Stopper").start();
         return stopper;

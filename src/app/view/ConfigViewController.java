@@ -161,17 +161,6 @@ public class ConfigViewController {
 
         // Choosing button text font/size/weight
         fontPicker = new FontPicker();
-//        fontPicker.setOnAction(e -> {
-//            Font value = fontPicker.getValue();
-//            System.out.println(value.getFamily() + " " + value.getName() + " " + value.getSize() + " " + value.getStyle());
-//        });
-//        fontPicker.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-//
-//            Font value = fontPicker.getValue();
-//            System.out.println(value.getFamily() + " " + value.getName() + " " + value.getSize() + " " + value.getStyle());
-//        });
-
-
         fontPicker.setMinHeight(27.0);
         sideBarVbox.getChildren().add(new Label("Välj typsnitt på knapp"));
         sideBarVbox.getChildren().add(fontPicker);
@@ -267,10 +256,18 @@ public class ConfigViewController {
         // Adding go back to main view-button
         Button saveAndExitButton = new Button("Gå till webbskal");
         saveAndExitButton.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-            if (this.exampleController != null)
-                this.exampleController.clearListeners();
-            this.saveConfiguration();
-            mainApp.loadWebView();
+
+            int response = this.saveOrDiscreditDialog();
+            // Dont save, but go to web
+            if (response == -1 || response == 1) {
+                if (this.exampleController != null)
+                    this.exampleController.clearListeners();
+                if (response == 1)
+                    this.saveConfiguration();
+                mainApp.loadWebView();
+            } else {
+                // do nothing, cancel
+            }
         });
 
         sideBarVbox.getChildren().add(saveAndExitButton);
@@ -378,6 +375,30 @@ public class ConfigViewController {
             System.exit(1);
         } else if (result.get() == buttonNo) {
             System.exit(1);
+        }
+    }
+
+    private int saveOrDiscreditDialog() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.initOwner(mainApp.getPrimaryStage());
+        alert.setTitle("Säkerställande");
+        alert.setHeaderText("Spara");
+        alert.setContentText("Vill du spara och skriva över den existerande konfigurationen?");
+
+        ButtonType buttonYes = new ButtonType("Spara och gå till webbskal");
+        ButtonType buttonNo = new ButtonType("Gå till webbskal utan att spara");
+        ButtonType buttonCancel = new ButtonType("Avbryt");
+
+        alert.getButtonTypes().clear();
+        alert.getButtonTypes().addAll(buttonYes, buttonNo, buttonCancel);
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == buttonYes) {
+            this.saveConfiguration();
+            return 1;
+        } else if (result.get() == buttonNo) {
+            return -1;
+        } else {
+            return 0;
         }
     }
 
