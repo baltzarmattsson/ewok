@@ -98,9 +98,10 @@ public class ConfigViewController {
 
             // Adding button font
 //            this.fontPicker.setValue(config.getButtonFont());
-            this.fontPicker.valueProperty().set(config.getButtonFont());
-            System.out.println(config.getButtonFont() == null);
-            System.out.println(fontPicker.getValue());
+//            this.fontPicker.valueProperty().set(config.getButtonFont());
+//            System.out.println(config.getButtonFont() == null);
+//            System.out.println(fontPicker.getValue());
+            this.fontPicker = new FontPicker(config.getButtonFont());
 
             // Adding bg color
             this.bgColorPicker.setValue(config.getBgColor());
