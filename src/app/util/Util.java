@@ -5,6 +5,7 @@ import app.model.ButtonInfo;
 import app.model.ConfigFileSections;
 import app.model.Configuration;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +31,21 @@ public class Util {
         configText.put(indexCounter++, ConfigFileSections.IDLE_START.get());
         configText.put(indexCounter++, Integer.toString(configToBeParsed.getIdleTimeInSeconds()));
         configText.put(indexCounter++, ConfigFileSections.IDLE_END.get());
+
+        // Reading button color
+        configText.put(indexCounter++, ConfigFileSections.BUTCOL_START.get());
+        configText.put(indexCounter++, Util.colorToHex(configToBeParsed.getButtonColor()));
+        configText.put(indexCounter++, ConfigFileSections.BUTCOL_END.get());
+
+        // Reading button text color
+        configText.put(indexCounter++, ConfigFileSections.BUTTEXTCOL_START.get());
+        configText.put(indexCounter++, Util.colorToHex(configToBeParsed.getButtonTextColor()));
+        configText.put(indexCounter++, ConfigFileSections.BUTTEXTCOL_END.get());
+
+        // Reading button font
+        configText.put(indexCounter++, ConfigFileSections.BUTFONT_START.get());
+        configText.put(indexCounter++, Util.fontToString(configToBeParsed.getButtonFont()));
+        configText.put(indexCounter++, ConfigFileSections.BUTFONT_END.get());
 
         // Reading bg color
         configText.put(indexCounter++, ConfigFileSections.BGCOL_START.get());
@@ -108,6 +124,33 @@ public class Util {
                 if (currentLine.equals(ConfigFileSections.IDLE_END.get()) == false) {
                     int idleTimeInSeconds = Integer.parseInt(currentLine);
                     parsedConfig.setIdleTimeInSeconds(idleTimeInSeconds);
+                }
+            }
+
+            // Read button color
+            if (currentLine.equals(ConfigFileSections.BUTCOL_START.get())) {
+                currentLine = configAsStrings.get(++i);
+                if (currentLine.equals(ConfigFileSections.BUTCOL_END.get()) == false) {
+                    Color buttonColor = Util.hexToColor(currentLine);
+                    parsedConfig.setButtonColor(buttonColor);
+                }
+            }
+
+            // Read button text color
+            if (currentLine.equals(ConfigFileSections.BUTTEXTCOL_START.get())) {
+                currentLine = configAsStrings.get(++i);
+                if (currentLine.equals(ConfigFileSections.BUTTEXTCOL_END.get()) == false) {
+                    Color butTextCol = Util.hexToColor(currentLine);
+                    parsedConfig.setButtonTextColor(butTextCol);
+                }
+            }
+
+            // Read button font
+            if (currentLine.equals(ConfigFileSections.BUTFONT_START.get())) {
+                currentLine = configAsStrings.get(++i);
+                if (currentLine.equals(ConfigFileSections.BUTFONT_END.get()) == false) {
+                    Font butFont = Util.stringToFont(currentLine);
+                    parsedConfig.setButtonFont(butFont);
                 }
             }
 
@@ -192,6 +235,19 @@ public class Util {
 
     public static Color hexToColor(String hex) {
         return Color.web(hex);
+    }
+
+    public static String fontToString(Font f) {
+//    family style size
+        String fontAsString = "";
+        fontAsString += f.getName() + "\t" + f.getSize();
+        return fontAsString;
+    }
+
+    public static Font stringToFont(String s) {
+        String[] stringSplit = s.split("\t");
+        Font retFont = new Font(stringSplit[0], Double.parseDouble(stringSplit[1]));
+        return retFont;
     }
 
 }

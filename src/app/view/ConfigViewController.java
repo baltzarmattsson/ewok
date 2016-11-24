@@ -4,9 +4,9 @@ package app.view;
 
 import app.Main;
 import app.model.ButtonInfo;
-import app.util.ConfigReader;
 import app.model.Configuration;
-import app.util.Util;
+import app.util.ConfigReader;
+import com.fo.controls.fontpicker.FontPicker;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
@@ -18,10 +18,12 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class ConfigViewController {
 
@@ -29,7 +31,10 @@ public class ConfigViewController {
 
     // Configurations
     private HashMap<Integer, ButtonInfo> buttonInfo = new HashMap<Integer, ButtonInfo>();
+    private Color buttonColor;
+    private Color buttonTextColor;
     private Color bgColor;
+    private Font buttonFont;
     private int idleTimeInSeconds;
     private double firstColumnPercentWidth;
     private boolean firstButtonIsHomescreen;
@@ -47,12 +52,16 @@ public class ConfigViewController {
     @FXML
     private VBox sideBarVbox;
     private VBox buttonVbox;
-    private ColorPicker colorPicker;
+    private FontPicker fontPicker;
+    private ColorPicker bgColorPicker;
+    private ColorPicker buttonColorPicker;
+    private ColorPicker buttonTextColorPicker;
     private Slider idleSlider;
     private Slider widthSlider;
     private CheckBox homeScreenIsFirstButtonCheckbox;
     private TextField homescreenURLTextField;
     private Label homescreenResponseLabel;
+
 
     @FXML
     public void initialize() {
@@ -64,6 +73,8 @@ public class ConfigViewController {
     public void initializeFromConfig(Configuration config) {
         if (config != null) {
             this.buttonInfo = config.getButtonInfo();
+            this.buttonColor = config.getButtonColor();
+            this.buttonTextColor = config.getButtonTextColor();
             this.bgColor = config.getBgColor();
             this.idleTimeInSeconds = config.getIdleTimeInSeconds();
             this.firstColumnPercentWidth = config.getFirstColumnPercentWidth();
@@ -79,8 +90,20 @@ public class ConfigViewController {
                 this.buttonVbox.getChildren().add(hbox);
             }
 
+            // Adding button color
+            this.buttonColorPicker.setValue(config.getButtonColor());
+
+            // Adding button text color
+            this.buttonTextColorPicker.setValue(config.getButtonTextColor());
+
+            // Adding button font
+//            this.fontPicker.setValue(config.getButtonFont());
+            this.fontPicker.valueProperty().set(config.getButtonFont());
+            System.out.println(config.getButtonFont() == null);
+            System.out.println(fontPicker.getValue());
+
             // Adding bg color
-            this.colorPicker.setValue(config.getBgColor());
+            this.bgColorPicker.setValue(config.getBgColor());
             this.bgColor = config.getBgColor();
 
             // Adding idle time
@@ -123,16 +146,55 @@ public class ConfigViewController {
         sideBarVbox.getChildren().add(addNewButton);
         sideBarVbox.getChildren().add(buttonVbox);
 
-        // Choosing background color
-        colorPicker = new ColorPicker();
-        colorPicker.setOnAction(e -> {
-            if (colorPicker.getValue() != null)
-                this.bgColor = colorPicker.getValue();
-            System.out.println(bgColor);
+        // Choosing button color
+        buttonColorPicker = new ColorPicker();
+        buttonColorPicker.setOnAction(e -> {
+            if (buttonColorPicker.getValue() != null)
+                this.buttonColor = buttonColorPicker.getValue();
         });
 
+        buttonColorPicker.setMinHeight(27.0);
+        sideBarVbox.getChildren().add(new Label("Välj knappfärg"));
+        sideBarVbox.getChildren().add(buttonColorPicker);
+
+        // Choosing button text font/size/weight
+        fontPicker = new FontPicker();
+//        fontPicker.setOnAction(e -> {
+//            Font value = fontPicker.getValue();
+//            System.out.println(value.getFamily() + " " + value.getName() + " " + value.getSize() + " " + value.getStyle());
+//        });
+//        fontPicker.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+//
+//            Font value = fontPicker.getValue();
+//            System.out.println(value.getFamily() + " " + value.getName() + " " + value.getSize() + " " + value.getStyle());
+//        });
+
+
+        fontPicker.setMinHeight(27.0);
+        sideBarVbox.getChildren().add(new Label("Välj typsnitt på knapp"));
+        sideBarVbox.getChildren().add(fontPicker);
+
+
+        // Choosing button text color
+        buttonTextColorPicker = new ColorPicker();
+        buttonTextColorPicker.setOnAction(e -> {
+            if (buttonTextColorPicker.getValue() != null)
+                this.buttonTextColor = buttonTextColorPicker.getValue();
+        });
+
+        buttonTextColorPicker.setMinHeight(27.0);
+        sideBarVbox.getChildren().add(new Label("Välj färg på knapptext"));
+        sideBarVbox.getChildren().add(buttonTextColorPicker);
+
+        // Choosing background color
+        bgColorPicker = new ColorPicker();
+        bgColorPicker.setOnAction(e -> {
+            if (bgColorPicker.getValue() != null)
+                this.bgColor = bgColorPicker.getValue();
+        });
+        bgColorPicker.setMinHeight(27.0);
         sideBarVbox.getChildren().add(new Label("Välj bakgrundsfärg"));
-        sideBarVbox.getChildren().add(colorPicker);
+        sideBarVbox.getChildren().add(bgColorPicker);
 
         // Adding idle-time slider
         idleSlider = new Slider();
@@ -188,8 +250,6 @@ public class ConfigViewController {
         sideBarVbox.getChildren().add(homeScreenIsFirstButtonLabel);
         sideBarVbox.getChildren().add(homescreenCheckBoxAndLabel);
 
-//        sideBarVbox.getChildren().add(homeScreenIsFirstButtonLabel);
-//        sideBarVbox.getChildren().add(homeScreenIsFirstButtonCheckbox);
         sideBarVbox.getChildren().add(homescreenURLTextField);
 
         // Adding update view button
@@ -216,25 +276,14 @@ public class ConfigViewController {
         // Adding exit application button
         Button exitApplicationButton = new Button("Avsluta applikation");
         exitApplicationButton.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-            // TODO save unfinished work
-            System.exit(0);
+            this.exitApplication();
         });
 
         sideBarVbox.getChildren().add(exitApplicationButton);
 
-//        rootHolder.getColumnConstraints().get(0).setHgrow(Priority.NEVER);
-
         // Adding a clean gridpane as exampleview
         this.exampleView = new GridPane();
         this.exampleHolder.add(exampleView, 0, 0, 1, 1);
-//        this.exampleView.prefHeightProperty().bind(this.rootHolder.heightProperty());
-//        this.exampleView.prefWidthProperty().bind(this.rootHolder.widthProperty());
-//        this.exampleView.prefHeightProperty().bind(rootHolder.getColumnConstraints().get(1).prefWidthProperty());
-//        this.exampleView.prefWidthProperty().bind(rootHolder.getRowConstraints().get(0).prefHeightProperty());
-//        this.exampleView.setGridLinesVisible(true);
-//        this.rootHolder.add(exampleView, 1, 0, 1, 1);
-
-        System.out.println("KOMIGEN");
 
     }
 
@@ -298,11 +347,36 @@ public class ConfigViewController {
         retConfig.setButtonInfo(this.buttonInfo);
         retConfig.setFirstColumnPercentWidth(this.firstColumnPercentWidth);
         retConfig.setIdleTimeInSeconds(this.idleTimeInSeconds);
+        retConfig.setButtonTextColor(this.buttonTextColor);
+        retConfig.setButtonFont((this.buttonFont = this.fontPicker.getValue()));
+        retConfig.setButtonColor(this.buttonColor == null ? Color.BLACK : this.buttonColor);
         retConfig.setBgColor(this.bgColor);
         retConfig.setHomeScreenURL(this.homeScreenURL);
         retConfig.setFirstButtonIsHomescreen(this.firstButtonIsHomescreen);
 
         return retConfig;
+    }
+
+    private void exitApplication() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.initOwner(mainApp.getPrimaryStage());
+        alert.setTitle("Säkerställande");
+        alert.setHeaderText("Avsluta program");
+        alert.setContentText("Vill du spara och skriva över den existerande konfigurationen?");
+
+        ButtonType buttonYes = new ButtonType("Avsluta och spara");
+        ButtonType buttonNo = new ButtonType("Avsluta utan att spara");
+        ButtonType buttonCancel = new ButtonType("Avbryt");
+
+        alert.getButtonTypes().clear();
+        alert.getButtonTypes().addAll(buttonYes, buttonNo, buttonCancel);
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == buttonYes) {
+            this.saveConfiguration();
+            System.exit(1);
+        } else if (result.get() == buttonNo) {
+            System.exit(1);
+        }
     }
 
     private void updateExample() {
@@ -330,13 +404,6 @@ public class ConfigViewController {
 
         this.exampleView.prefHeightProperty().bind(this.rootHolder.heightProperty());
         this.exampleView.prefWidthProperty().bind(this.rootHolder.widthProperty());
-//        this.exampleView.prefHeightProperty().bind(rootHolder.getColumnConstraints().get(1).prefWidthProperty());
-//        this.exampleView.prefWidthProperty().bind(rootHolder.getRowConstraints().get(0).prefHeightProperty());
-//        this.exampleView.prefWidthProperty().bind(rootHolder.getRowConstraints().get(0).heigh
-//        exampleView.setGridLinesVisible(true);
-
-//        rootHolder.setFillHeight(exampleView, true);
-//        rootHolder.setFillWidth(exampleView, true);
         String style = Main.class.getResource("view/css/styling.css").toExternalForm();
         this.exampleView.getStylesheets().add(style);
 
@@ -349,12 +416,6 @@ public class ConfigViewController {
 //        exampleView.setPrefSize(500, 500);
 
         rootHolder.add(exampleView, 1, 0, 1, 1);
-
-        rootHolder.setGridLinesVisible(true);
-    }
-
-    public Main getMainApp() {
-        return mainApp;
     }
 
     public void setMainApp(Main mainApp) {

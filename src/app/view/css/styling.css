@@ -1,14 +1,14 @@
-#navigationbutton {
+ /**#navigationbutton {
     -fx-background-color:
         #000000,
         linear-gradient(#7ebcea, #2f4b8f),
         linear-gradient(#426ab7, #263e75),
         linear-gradient(#395cab, #223768);
     -fx-background-insets: 0,1,2,3;
-    -fx-background-radius: 30px;
+    -fx-background-radius: 0px;
     -fx-padding: 12 30 12 30;
     -fx-text-fill: white;
-    -fx-font-size: 12px;
+    -fx-font-size: 20px;
 }
 #navigationbutton:pressed {
      -fx-background-color:
@@ -17,3 +17,15 @@
          linear-gradient(#426ab7, #263e75),
          linear-gradient(#2f4b8f, #7ebcea);
  }
+
+
+
+ #navigationbutton {
+    -fx-background-size: 70px;
+    -fx-font-size: 20px;
+    -fx-text-fill: white;
+ }
+ #navigationbutton:pressed {
+    -fx-background-color: lightgray;
+ }
+  **/

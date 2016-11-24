@@ -4,11 +4,18 @@ package app.view;
 
 import app.Main;
 import app.model.ButtonInfo;
-import app.util.ConfigReader;
 import app.model.Configuration;
+import app.util.ConfigReader;
 import app.util.IdleListener;
 import app.util.Util;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.StringBinding;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
@@ -20,10 +27,13 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -74,10 +84,9 @@ public class ViewController {
             });
 
         if (rootHolder != null) {
-            System.out.println("adding listener");
             // Adding listener to shortcut for Settings-password-prompt
             rootHolder.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
-                if (e.getCode() == KeyCode.F9 && e.isShiftDown()) {
+                if ((e.getCode() == KeyCode.F9 && e.isShiftDown()) /**|| (e.getCode() == KeyCode.ESCAPE && e.isShiftDown()) || (e.getCode() == KeyCode.ESCAPE && e.isAltDown())**/) {
                     this.showPasswordPrompt();
                 }
             });
@@ -140,11 +149,7 @@ public class ViewController {
 
         // Adding bgColor, converting javafx Color to CSS hex
         Color c = config.getBgColor();
-        String hex = null;
-        if (c != null)
-            hex = Util.colorToHex(c);
-        else
-            hex = Util.colorToHex(Color.WHITE);
+        String hex = Util.colorToHex(c != null ? c : Color.WHITE);
         rootHolder.setStyle("-fx-background-color:" + hex + ";");
 
         // Adding buttons
@@ -153,15 +158,51 @@ public class ViewController {
             Button button = new Button();
 
             button.setText(bInfo.getText());
-            // Applying CSS
-            button.setId("navigationbutton");
-            // Adding listener to buttons
-            button.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> showWebsite(bInfo.getURL()));
+
+            // Adding listener, applying color and animation for buttons
+            if (config.getButtonColor() == null)
+                config.setButtonColor(Color.GRAY);
+            if (config.getButtonTextColor() == null)
+                config.setButtonTextColor(Color.WHITE);
+            if (config.getButtonFont() == null)
+                config.setButtonFont(Font.font("Helvetica", 13.0));
+
+            String butColHex = Util.colorToHex(config.getButtonTextColor());
+            String fontFamily = config.getButtonFont().getFamily();
+            int fontSize = (int) config.getButtonFont().getSize();
+
+            final ObjectProperty<Color> color = new SimpleObjectProperty<Color>(config.getButtonColor());
+            final StringBinding cssColorSpec = Bindings.createStringBinding(() -> String.format("" +
+                            "-fx-body-color: rgb(%d, %d, %d);" +
+                            "-fx-font-size: %dpx;" +
+                            "-fx-text-fill: %s;" +
+                            "-fx-font-family: \"%s\";" +
+                            "-fx-background-radius: 10px;",
+                    (int) (256 * color.get().getRed()),
+                    (int) (256 * color.get().getGreen()),
+                    (int) (256 * color.get().getBlue()),
+                    fontSize,
+                    butColHex,
+                    //fontName
+                    fontFamily
+            ), color);
+            button.styleProperty().bind(cssColorSpec);
+
+            final Timeline timeline = new Timeline(
+                    new KeyFrame(Duration.ZERO, new KeyValue(color, Color.DARKGRAY)),
+                    new KeyFrame(Duration.seconds(1), new KeyValue(color, config.getButtonColor())));
+
+            button.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+                timeline.play();
+                showWebsite(bInfo.getURL());
+            });
+            // Setting sizing
+            button.setMinSize(150.0, 150.0);
+            button.setMaxSize(170.0, 170.0);
+            button.wrapTextProperty().setValue(true);
+            button.textAlignmentProperty().setValue(TextAlignment.CENTER);
             rootHolder.add(button, 0, i);
         }
-
-//        // Centers the buttons horizontally TODO REMOVE
-//        rootHolder.getColumnConstraints().get(0).setHalignment(HPos.CENTER);
 
         // Adding web view
         webView = new WebView();
@@ -238,14 +279,9 @@ public class ViewController {
         this.listenersAreStopped = true;
     }
 
-    public Main getMainApp() {
-        return mainApp;
-    }
-
     public void setMainApp(Main mainApp) {
         this.mainApp = mainApp;
     }
-
 
 
 }

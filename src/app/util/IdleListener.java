@@ -1,8 +1,6 @@
 package app.util;
 
-import app.Main;
 import app.view.ViewController;
-import javafx.application.Platform;
 
 import java.util.concurrent.TimeUnit;
 
@@ -34,7 +32,7 @@ public class IdleListener extends Thread {
             try {
                 this.sleep(TimeUnit.SECONDS.toMillis(1));
                 timeSinceLastAction = System.currentTimeMillis() - timeAtLastAction;
-                System.out.println(TimeUnit.MILLISECONDS.toSeconds(timeSinceLastAction) + "s since last action" + this.hashCode());
+                System.out.print(TimeUnit.MILLISECONDS.toSeconds(timeSinceLastAction) + "s ");
             } catch (InterruptedException e) {
             }
         }
