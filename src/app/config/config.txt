@@ -1,0 +1,41 @@
+#BUTINF_START
+###BI_START###
+##BI_INDEX 0
+##BI_TEXT Sök böcker
+##BI_URL http://web.wagnerguide.com/2.0/uwl.aspx?Lang=en&Extern=true&Symbol=0x000000&Sub=False&MainButtonId=0&ButtonId=0&Text=
+###BI_END###
+###BI_START###
+##BI_INDEX 1
+##BI_TEXT Navigation
+##BI_URL ttps://arenagodemo.axiell.com/
+###BI_END###
+###BI_START###
+##BI_INDEX 2
+##BI_TEXT Boka datorer och grupprum
+##BI_URL http://netloan.bibliotek.umea.se/Login.aspx?ReturnUrl=%2f
+###BI_END###
+#BUTINF_END
+#IDLE_START
+68
+#IDLE_END
+#BUTCOL_START
+#8099FF
+#BUTCOL_END
+#BUTTEXTCOL_START
+#4D4D4D
+#BUTTEXTCOL_END
+#BUTFONT_START
+Helvetica Neue Condensed Bold	22.0
+#BUTFONT_END
+#BGCOL_START
+#F2F2F2
+#BGCOL_END
+#FIRSTCOLWIDTH_START
+18.0
+#FIRSTCOLWIDTH_END
+#FIRSTBUTTONISHOME_START
+false
+#FIRSTBUTTONISHOME_END
+#HOMESCREENURL_START
+
+#HOMESCREENURL_END

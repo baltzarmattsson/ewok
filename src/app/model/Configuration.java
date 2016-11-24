@@ -1,6 +1,7 @@
 package app.model;
 
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
 import java.util.HashMap;
 
@@ -10,14 +11,20 @@ public class Configuration {
     private HashMap<Integer, ButtonInfo> buttonInfo = new HashMap<Integer, ButtonInfo>();
     private int idleTimeInSeconds;
     private Color bgColor;
+    private Color buttonColor;
+    private Color buttonTextColor;
+    private Font buttonFont;
     private double firstColumnPercentWidth;
     private String homeScreenURL;
     private boolean firstButtonIsHomescreen;
 
-    public Configuration(HashMap<Integer, ButtonInfo> buttonInfo, int idleTimeInSeconds, Color bgColor, double firstColumnPercentWidth, String homeScreenURL, boolean firstButtonIsHomescreen) {
+    public Configuration(HashMap<Integer, ButtonInfo> buttonInfo, int idleTimeInSeconds, Color bgColor, Color buttonColor, Color buttonTextColor, Font buttonFont, double firstColumnPercentWidth, String homeScreenURL, boolean firstButtonIsHomescreen) {
         this.buttonInfo = buttonInfo;
         this.idleTimeInSeconds = idleTimeInSeconds;
         this.bgColor = bgColor;
+        this.buttonColor = buttonColor;
+        this.buttonTextColor = buttonTextColor;
+        this.buttonFont = buttonFont;
         this.firstColumnPercentWidth = firstColumnPercentWidth;
         this.homeScreenURL = homeScreenURL;
         this.firstButtonIsHomescreen = firstButtonIsHomescreen;
@@ -72,5 +79,29 @@ public class Configuration {
 
     public void setFirstButtonIsHomescreen(boolean firstButtonIsHomescreen) {
         this.firstButtonIsHomescreen = firstButtonIsHomescreen;
+    }
+
+    public Color getButtonColor() {
+        return buttonColor;
+    }
+
+    public void setButtonColor(Color buttonColor) {
+        this.buttonColor = buttonColor;
+    }
+
+    public Color getButtonTextColor() {
+        return buttonTextColor;
+    }
+
+    public void setButtonTextColor(Color buttonTextColor) {
+        this.buttonTextColor = buttonTextColor;
+    }
+
+    public Font getButtonFont() {
+        return buttonFont;
+    }
+
+    public void setButtonFont(Font buttonFont) {
+        this.buttonFont = buttonFont;
     }
 }

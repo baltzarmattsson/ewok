@@ -11,6 +11,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
@@ -25,7 +26,7 @@ public class Main extends Application {
     private Stage primaryStage;
     private GridPane rootLayout;
 
-    private final String WINDOW_TITLE = "Appfinder";
+    private final String WINDOW_TITLE = "Wagner Wayfinder Webbskal";
     private ViewController controller;
     private ConfigViewController configController;
 
@@ -34,6 +35,8 @@ public class Main extends Application {
 
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle(WINDOW_TITLE);
+
+        primaryStage.getIcons().add(new Image(Main.class.getResourceAsStream("view/images/ww.png")));
 
         this.loadWebView();
     }
@@ -67,13 +70,7 @@ public class Main extends Application {
                 primaryStage.setFullScreen(true);
         });
 
-        primaryStage.fullScreenProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue != null && !newValue.booleanValue()) {
-                primaryStage.setFullScreen(true);
-            }
-        });
-
-//        this.primaryStage.setAlwaysOnTop(true);
+        this.primaryStage.setAlwaysOnTop(true);
         this.primaryStage.setFullScreen(true);
         this.primaryStage.show();
 
@@ -81,25 +78,9 @@ public class Main extends Application {
         AltTabStopper.create();
     }
 
-    public Scene getWebScene() {
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(Main.class.getResource("view/View.fxml"));
-        try {
-            this.rootLayout = loader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // Getting CSS
-        String style = Main.class.getResource("view/css/styling.css").toExternalForm();
-
-        Scene scene = new Scene(rootLayout);
-        scene.getStylesheets().add(style);
-
-        return scene;
-    }
-
     public void loadConfigView() {
+
+
         // Loading the root layout
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(Main.class.getResource("view/ConfigView.fxml"));
@@ -113,7 +94,8 @@ public class Main extends Application {
         Scene scene = new Scene(rootLayout);
         this.primaryStage.setScene(scene);
 
-//        this.primaryStage.setFullScreen(true);
+        this.primaryStage.setAlwaysOnTop(false);
+        this.primaryStage.setFullScreen(false);
         this.primaryStage.show();
     }
 
