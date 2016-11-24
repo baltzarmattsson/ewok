@@ -36,9 +36,9 @@ public class ConfigReader {
 			br = new BufferedReader(new InputStreamReader(new FileInputStream(Main.class.getResource("config/config.txt").getFile()), StandardCharsets.UTF_8));
 
             // Used from the jarfile
-//            jarFile = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
-//            finalPath = jarFile.getParent() + File.separator + filePath + File.separator + fileName;
-//            br = new BufferedReader(new FileReader(new File(finalPath)));
+            jarFile = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
+            finalPath = jarFile.getParent() + File.separator + filePath + File.separator + fileName;
+            br = new BufferedReader(new FileReader(new File(finalPath)));
 
             String s;
             HashMap<Integer, String> configAsText = new HashMap<Integer, String>();
@@ -52,21 +52,21 @@ public class ConfigReader {
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        catch (URISyntaxException e) {
-//            e.printStackTrace();
-//        }
+        catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void saveConfigurationFile(Configuration config) {
         BufferedWriter bw = null;
         try {
             // Used for developing
-             bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(Main.class.getResource("config/config.txt").getFile()), StandardCharsets.UTF_8));
+//             bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(Main.class.getResource("config/config.txt").getFile()), StandardCharsets.UTF_8));
 
             // Used from the jarfile
-//            File jarFile = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
-//            String finalPath = jarFile.getParent() + File.separator + filePath + File.separator + fileName;
-//            bw = new BufferedWriter(new FileWriter(new File(finalPath)));
+            File jarFile = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
+            String finalPath = jarFile.getParent() + File.separator + filePath + File.separator + fileName;
+            bw = new BufferedWriter(new FileWriter(new File(finalPath)));
 
 
             // Kolla ifall config är null
@@ -79,9 +79,9 @@ public class ConfigReader {
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        catch (URISyntaxException e) {
-//            e.printStackTrace();
-//        }
+        catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
         finally {
             try {
                 if (bw != null)

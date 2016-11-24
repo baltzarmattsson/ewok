@@ -61,24 +61,24 @@ public class Main extends Application {
         this.primaryStage.setScene(scene);
         this.primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 
-//        primaryStage.setOnCloseRequest(e -> {
-//            e.consume();
-//            if (primaryStage.isFullScreen() == false)
-//                primaryStage.setFullScreen(true);
-//        });
-//
-//        primaryStage.fullScreenProperty().addListener((observable, oldValue, newValue) -> {
-//            if(newValue != null && !newValue.booleanValue()) {
-//                primaryStage.setFullScreen(true);
-//            }
-//        });
+        primaryStage.setOnCloseRequest(e -> {
+            e.consume();
+            if (primaryStage.isFullScreen() == false)
+                primaryStage.setFullScreen(true);
+        });
+
+        primaryStage.fullScreenProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue != null && !newValue.booleanValue()) {
+                primaryStage.setFullScreen(true);
+            }
+        });
 
 //        this.primaryStage.setAlwaysOnTop(true);
         this.primaryStage.setFullScreen(true);
         this.primaryStage.show();
 
         // Starting AltTabStopper
-//        AltTabStopper.create();
+        AltTabStopper.create();
     }
 
     public Scene getWebScene() {
