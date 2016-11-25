@@ -96,6 +96,7 @@ public class Main extends Application {
 
         this.primaryStage.setAlwaysOnTop(false);
         this.primaryStage.setFullScreen(false);
+        this.primaryStage.setMaximized(true);
         this.primaryStage.show();
     }
 
