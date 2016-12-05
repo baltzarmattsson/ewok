@@ -17,6 +17,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
@@ -168,35 +169,58 @@ public class ViewController {
             if (config.getButtonTextColor() == null)
                 config.setButtonTextColor(Color.WHITE);
             if (config.getButtonFont() == null)
-                config.setButtonFont(Font.font("Helvetica", 13.0));
+                config.setButtonFont(Font.getDefault());
 
-            String butColHex = Util.colorToHex(config.getButtonTextColor());
+
+            String butTextColHex = Util.colorToHex(config.getButtonTextColor());
             String fontFamily = config.getButtonFont().getFamily();
             int fontSize = (int) config.getButtonFont().getSize();
 
-            final ObjectProperty<Color> color = new SimpleObjectProperty<Color>(config.getButtonColor());
-            final StringBinding cssColorSpec = Bindings.createStringBinding(() -> String.format("" +
-                            "-fx-body-color: rgb(%d, %d, %d);" +
-                            "-fx-font-size: %dpx;" +
-                            "-fx-text-fill: %s;" +
-                            "-fx-font-family: \"%s\";" +
-                            "-fx-background-radius: 10px;",
-                    (int) (256 * color.get().getRed()),
-                    (int) (256 * color.get().getGreen()),
-                    (int) (256 * color.get().getBlue()),
-                    fontSize,
-                    butColHex,
-                    //fontName
-                    fontFamily
-            ), color);
-            button.styleProperty().bind(cssColorSpec);
+            Color color = config.getButtonColor();
 
-            final Timeline timeline = new Timeline(
-                    new KeyFrame(Duration.ZERO, new KeyValue(color, Color.DARKGRAY)),
-                    new KeyFrame(Duration.seconds(1), new KeyValue(color, config.getButtonColor())));
+            String bodyColor = String.format("rgb(%d, %d, %d)",
+                    (int) (256 * color.getRed()),
+                    (int) (256 * color.getGreen()),
+                    (int) (256 * color.getBlue()));
+
+            String darkerBodyColor = String.format("rgb(%d, %d, %d)",
+                    (int) (0.8 * 256 * color.getRed()),
+                    (int) (0.8 * 256 * color.getGreen()),
+                    (int) (0.8 * 256 * color.getBlue()));
+
+
+            button.styleProperty().bind(
+                    Bindings
+                            .when(button.pressedProperty())
+                            .then(
+                                    new SimpleStringProperty(String.format("" +
+                                                    "-fx-body-color: %s;" +
+                                                    "-fx-font-size: %dpx;" +
+                                                    "-fx-text-fill: %s;" +
+                                                    "-fx-font-family: \"%s\";" +
+                                                    "-fx-background-radius: 10px;",
+                                            darkerBodyColor,
+                                            fontSize,
+                                            butTextColHex,
+                                            fontFamily
+                                    ))
+                            )
+                            .otherwise(
+                                    new SimpleStringProperty(String.format("" +
+                                                    "-fx-body-color: %s;" +
+                                                    "-fx-font-size: %dpx;" +
+                                                    "-fx-text-fill: %s;" +
+                                                    "-fx-font-family: \"%s\";" +
+                                                    "-fx-background-radius: 10px;",
+                                            bodyColor,
+                                            fontSize,
+                                            butTextColHex,
+                                            fontFamily
+                                    ))
+                            )
+            );
 
             button.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-                timeline.play();
                 showWebsite(bInfo.getURL());
             });
             // Setting sizing
@@ -216,12 +240,6 @@ public class ViewController {
 
     }
 
-    private void applyGridpaneRules() {
-//        // Centers the buttons horizontally
-//        rootHolder.getColumnConstraints().get(0).setHalignment(HPos.CENTER);
-
-    }
-
     @FXML
     private void showDefaultSite() {
         this.showWebsite(defaultSiteURL);
@@ -229,7 +247,6 @@ public class ViewController {
 
     private void showWebsite(String URL) {
         webEngine.load(URL);
-        System.gc();
     }
 
 
@@ -238,7 +255,6 @@ public class ViewController {
         if (idleActionIsPerformed == false) {
             Platform.runLater(() -> showDefaultSite());
             idleActionIsPerformed = true;
-            System.out.println("Switching to default");
         }
         if (this.listenersAreStopped == false)
             this.idleListener = new IdleListener(this, this.idleTimeInSeconds);
@@ -268,7 +284,6 @@ public class ViewController {
         dialogStage.initOwner(mainApp.getPrimaryStage());
         dialogStage.showAndWait();
         if (controller.isPasswordOk()) {
-            System.out.println("Pass OK");
             this.clearListeners();
             this.mainApp.loadConfigView();
         }
@@ -276,8 +291,10 @@ public class ViewController {
 
     // Used for clearing listeners in the example view, else they continue til the run() is done
     public void clearListeners() {
-        if (this.idleListener != null)
+        if (this.idleListener != null) {
             this.idleListener.setStop(true);
+            this.idleListener.interrupt();
+        }
         this.idleListener = null;
         this.listenersAreStopped = true;
     }

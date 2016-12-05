@@ -7,7 +7,7 @@
 ###BI_START###
 ##BI_INDEX 1
 ##BI_TEXT Navigation
-##BI_URL ttps://arenagodemo.axiell.com/
+##BI_URL https://arenagodemo.axiell.com/
 ###BI_END###
 ###BI_START###
 ##BI_INDEX 2
@@ -34,7 +34,7 @@ Helvetica Neue Condensed Bold	22.0
 18.0
 #FIRSTCOLWIDTH_END
 #FIRSTBUTTONISHOME_START
-false
+true
 #FIRSTBUTTONISHOME_END
 #HOMESCREENURL_START
 

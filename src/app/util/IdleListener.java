@@ -32,13 +32,11 @@ public class IdleListener extends Thread {
 
         while (TimeUnit.MILLISECONDS.toSeconds(timeSinceLastAction) < IDLE_TIME_THRESHOLD_SECONDS && this.stop == false) {
             try {
-                this.sleep(TimeUnit.SECONDS.toMillis(1));
+                this.sleep(TimeUnit.SECONDS.toMillis(5));
                 timeSinceLastAction = System.currentTimeMillis() - timeAtLastAction;
-//                System.out.print(TimeUnit.MILLISECONDS.toSeconds(timeSinceLastAction) + "s ");
             } catch (InterruptedException e) {
             }
         }
-//        System.out.println("Requesting idle action from Controller @IdleListener:38");
         this.controller.performIdleAction();
     }
 

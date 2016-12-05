@@ -7,7 +7,6 @@ import app.model.ButtonInfo;
 import app.util.ConfigReader;
 import app.model.Configuration;
 import app.util.fontpicker.FontPicker;
-import app.util.fontpicker.FontPickerContent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
@@ -19,7 +18,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -35,7 +33,6 @@ public class ConfigViewController {
     private Color buttonColor;
     private Color buttonTextColor;
     private Color bgColor;
-    private Font buttonFont;
     private int idleTimeInSeconds;
     private double firstColumnPercentWidth;
     private boolean firstButtonIsHomescreen;
@@ -63,7 +60,6 @@ public class ConfigViewController {
     private TextField homescreenURLTextField;
     private Label homescreenResponseLabel;
 
-
     @FXML
     public void initialize() {
         this.initializeView();
@@ -84,7 +80,6 @@ public class ConfigViewController {
 
             // Adding buttons
             for (Map.Entry<Integer, ButtonInfo> map : this.buttonInfo.entrySet()) {
-                int index = map.getKey();
                 ButtonInfo bi = map.getValue();
 
                 HBox hbox = this.generateButtonEntryHBox(bi.getText(), bi.getURL());
@@ -98,11 +93,7 @@ public class ConfigViewController {
             this.buttonTextColorPicker.setValue(config.getButtonTextColor());
 
             // Adding button font
-//            this.fontPicker.setValue(config.getButtonFont());
-//            this.fontPicker.valueProperty().set(config.getButtonFont());
-//            System.out.println(config.getButtonFont() == null);
-//            System.out.println(fontPicker.getValue());
-            this.fontPicker = new FontPicker(config.getButtonFont());
+            this.fontPicker.setValue(config.getButtonFont());
 
             // Adding bg color
             this.bgColorPicker.setValue(config.getBgColor());
@@ -162,6 +153,7 @@ public class ConfigViewController {
         // Choosing button text font/size/weight
         fontPicker = new FontPicker();
         fontPicker.setMinHeight(27.0);
+        fontPicker.setPrefWidth(137.0);
         sideBarVbox.getChildren().add(new Label("Välj typsnitt på knapp"));
         sideBarVbox.getChildren().add(fontPicker);
 
@@ -346,10 +338,11 @@ public class ConfigViewController {
         retConfig.setButtonInfo(this.buttonInfo);
         retConfig.setFirstColumnPercentWidth(this.firstColumnPercentWidth);
         retConfig.setIdleTimeInSeconds(this.idleTimeInSeconds);
-        retConfig.setButtonTextColor(this.buttonTextColor);
-        retConfig.setButtonFont((this.buttonFont = this.fontPicker.getValue()));
+        retConfig.setButtonTextColor(this.buttonTextColor == null ? Color.WHITE : this.buttonTextColor);
+        retConfig.setButtonFont(this.fontPicker.getValue());
+//        System.out.println(this.buttonFont);
         retConfig.setButtonColor(this.buttonColor == null ? Color.BLACK : this.buttonColor);
-        retConfig.setBgColor(this.bgColor);
+        retConfig.setBgColor(this.bgColor == null ? Color.WHITESMOKE : this.bgColor);
         retConfig.setHomeScreenURL(this.homeScreenURL);
         retConfig.setFirstButtonIsHomescreen(this.firstButtonIsHomescreen);
 

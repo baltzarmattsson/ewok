@@ -239,7 +239,8 @@ public class Util {
     }
 
     public static String fontToString(Font f) {
-//    family style size
+        if (f == null)
+            f = Font.getDefault();
         String fontAsString = "";
         fontAsString += f.getName() + "\t" + f.getSize();
         return fontAsString;
