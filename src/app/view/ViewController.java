@@ -18,13 +18,18 @@ import javafx.beans.binding.StringBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
+import javafx.geometry.Insets;
 import javafx.geometry.VPos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -42,7 +47,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
 
-public class ViewController {
+public class ViewController extends Controller {
 
     private Main mainApp;
 
@@ -56,6 +61,7 @@ public class ViewController {
     private String defaultSiteURL;
 
     private boolean listenersAreStopped = false;
+    private boolean passwordPromptIsShowing = false;
 
     @FXML
     private GridPane rootHolder;
@@ -142,7 +148,7 @@ public class ViewController {
             for (int i = 0; i < nbrOfButtons; i++) {
                 RowConstraints rowConst = new RowConstraints();
                 rowConst.setValignment(VPos.CENTER);
-                rowConst.setPercentHeight(100.0 / nbrOfButtons);
+                rowConst.setPercentHeight(90.0 / nbrOfButtons); // 90.0 since we want 10% for settings and logo in the bottom
                 rowConst.setVgrow(Priority.ALWAYS);
                 rootHolder.getRowConstraints().add(rowConst);
             }
@@ -151,13 +157,21 @@ public class ViewController {
             rootHolder.getRowConstraints().add(new RowConstraints());
         }
 
+        // Adding settings and logo-row
+        RowConstraints setLogConst = new RowConstraints();
+        setLogConst.setValignment(VPos.CENTER);
+        setLogConst.setPercentHeight(10.0);
+        setLogConst.setVgrow(Priority.ALWAYS);
+        rootHolder.getRowConstraints().add(setLogConst);
+
         // Adding bgColor, converting javafx Color to CSS hex
         Color c = config.getBgColor();
         String hex = Util.colorToHex(c != null ? c : Color.WHITE);
         rootHolder.setStyle("-fx-background-color:" + hex + ";");
 
         // Adding buttons
-        for (int i = 0; i < nbrOfButtons; i++) {
+        int i;
+        for (i = 0; i < nbrOfButtons; i++) {
             ButtonInfo bInfo = buttonInfo.get(i);
             Button button = new Button();
 
@@ -220,9 +234,7 @@ public class ViewController {
                             )
             );
 
-            button.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-                showWebsite(bInfo.getURL());
-            });
+            button.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> showWebsite(bInfo.getURL()));
             // Setting sizing
             button.setMinSize(150.0, 150.0);
             button.setMaxSize(170.0, 170.0);
@@ -230,14 +242,19 @@ public class ViewController {
             button.textAlignmentProperty().setValue(TextAlignment.CENTER);
             rootHolder.add(button, 0, i);
         }
+        // Adding logo to bottom of sidebar
+        final ImageView wagnerLogo = new ImageView(new Image(Main.class.getResourceAsStream("view/images/wagnerGUIDE.png")));
+        wagnerLogo.setFitWidth(200);
+        wagnerLogo.setPreserveRatio(true);
+        wagnerLogo.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> showPasswordPrompt());
+        rootHolder.add(wagnerLogo, 0, nbrOfButtons);
 
         // Adding web view
         webView = new WebView();
         webEngine = webView.getEngine();
         webView.setVisible(true);
 
-        rootHolder.add(webView, 1, 0, 1, nbrOfButtons == 0 ? 1 : nbrOfButtons);
-
+        rootHolder.add(webView, 1, 0, 1, nbrOfButtons == 0 ? 2 : nbrOfButtons + 1);
     }
 
     @FXML
@@ -249,9 +266,8 @@ public class ViewController {
         webEngine.load(URL);
     }
 
-
+    @Override
     public void performIdleAction() {
-        System.gc();
         if (idleActionIsPerformed == false) {
             Platform.runLater(() -> showDefaultSite());
             idleActionIsPerformed = true;
@@ -264,28 +280,34 @@ public class ViewController {
 
     @FXML
     private void showPasswordPrompt() {
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(Main.class.getResource("view/PasswordPrompt.fxml"));
-        AnchorPane page = null;
-        try {
-            page = loader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        if (passwordPromptIsShowing == false) {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Main.class.getResource("view/PasswordPrompt.fxml"));
+            AnchorPane page = null;
+            try {
+                page = loader.load();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-        Stage dialogStage = new Stage();
-        dialogStage.initModality(Modality.NONE);
-        Scene scene = new Scene(page);
-        dialogStage.setScene(scene);
+            Stage dialogStage = new Stage();
+            dialogStage.initModality(Modality.NONE);
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
 
-        PasswordPromptController controller = loader.getController();
-        controller.setDialogStage(dialogStage);
+            PasswordPromptController controller = loader.getController();
+            controller.setDialogStage(dialogStage);
 
-        dialogStage.initOwner(mainApp.getPrimaryStage());
-        dialogStage.showAndWait();
-        if (controller.isPasswordOk()) {
-            this.clearListeners();
-            this.mainApp.loadConfigView();
+            dialogStage.initOwner(mainApp.getPrimaryStage());
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.getIcons().add(new Image(Main.class.getResourceAsStream("view/images/ww.gif")));
+            this.passwordPromptIsShowing = true;
+            dialogStage.showAndWait();
+            if (controller.isPasswordOk()) {
+                this.clearListeners();
+                this.mainApp.loadConfigView();
+            }
+            this.passwordPromptIsShowing = false;
         }
     }
 

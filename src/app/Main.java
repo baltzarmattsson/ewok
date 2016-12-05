@@ -36,7 +36,7 @@ public class Main extends Application {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle(WINDOW_TITLE);
 
-        primaryStage.getIcons().add(new Image(Main.class.getResourceAsStream("view/images/ww.png")));
+        primaryStage.getIcons().add(new Image(Main.class.getResourceAsStream("view/images/ww.gif")));
 
         this.loadWebView();
     }

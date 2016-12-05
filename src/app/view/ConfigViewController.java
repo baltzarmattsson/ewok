@@ -51,7 +51,7 @@ public class ConfigViewController {
     private VBox sideBarVbox;
     private VBox buttonVbox;
     private FontPicker fontPicker;
-    private ColorPicker bgColorPicker;
+//    private ColorPicker bgColorPicker;
     private ColorPicker buttonColorPicker;
     private ColorPicker buttonTextColorPicker;
     private Slider idleSlider;
@@ -96,8 +96,8 @@ public class ConfigViewController {
             this.fontPicker.setValue(config.getButtonFont());
 
             // Adding bg color
-            this.bgColorPicker.setValue(config.getBgColor());
-            this.bgColor = config.getBgColor();
+//            this.bgColorPicker.setValue(config.getBgColor());
+//            this.bgColor = config.getBgColor();
 
             // Adding idle time
             this.idleSlider.setValue(config.getIdleTimeInSeconds());
@@ -169,15 +169,15 @@ public class ConfigViewController {
         sideBarVbox.getChildren().add(new Label("Välj färg på knapptext"));
         sideBarVbox.getChildren().add(buttonTextColorPicker);
 
-        // Choosing background color
-        bgColorPicker = new ColorPicker();
-        bgColorPicker.setOnAction(e -> {
-            if (bgColorPicker.getValue() != null)
-                this.bgColor = bgColorPicker.getValue();
-        });
-        bgColorPicker.setMinHeight(27.0);
-        sideBarVbox.getChildren().add(new Label("Välj bakgrundsfärg"));
-        sideBarVbox.getChildren().add(bgColorPicker);
+//        // Choosing background color
+//        bgColorPicker = new ColorPicker();
+//        bgColorPicker.setOnAction(e -> {
+//            if (bgColorPicker.getValue() != null)
+//                this.bgColor = bgColorPicker.getValue();
+//        });
+//        bgColorPicker.setMinHeight(27.0);
+//        sideBarVbox.getChildren().add(new Label("Välj bakgrundsfärg"));
+//        sideBarVbox.getChildren().add(bgColorPicker);
 
         // Adding idle-time slider
         idleSlider = new Slider();
@@ -340,9 +340,8 @@ public class ConfigViewController {
         retConfig.setIdleTimeInSeconds(this.idleTimeInSeconds);
         retConfig.setButtonTextColor(this.buttonTextColor == null ? Color.WHITE : this.buttonTextColor);
         retConfig.setButtonFont(this.fontPicker.getValue());
-//        System.out.println(this.buttonFont);
         retConfig.setButtonColor(this.buttonColor == null ? Color.BLACK : this.buttonColor);
-        retConfig.setBgColor(this.bgColor == null ? Color.WHITESMOKE : this.bgColor);
+        retConfig.setBgColor(Color.WHITE);
         retConfig.setHomeScreenURL(this.homeScreenURL);
         retConfig.setFirstButtonIsHomescreen(this.firstButtonIsHomescreen);
 

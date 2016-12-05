@@ -1,6 +1,7 @@
 package app.util;
 
 import app.Main;
+import app.view.Controller;
 import app.view.ViewController;
 import javafx.application.Platform;
 
@@ -14,9 +15,9 @@ public class IdleListener extends Thread {
     private long timeAtLastAction;
     private boolean stop;
 
-    private ViewController controller;
+    private Controller controller;
 
-    public IdleListener(ViewController controller, int idleTimeInSeconds) {
+    public IdleListener(Controller controller, int idleTimeInSeconds) {
         this.stop = false;
         this.setDaemon(true);
         this.start();
