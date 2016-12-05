@@ -254,8 +254,11 @@ public class ConfigViewController {
             if (response == -1 || response == 1) {
                 if (this.exampleController != null)
                     this.exampleController.clearListeners();
-                if (response == 1)
+                if (response == 1) {
                     this.saveConfiguration();
+                } else if (response == -1) {
+                    ConfigReader.readConfigurationFile();
+                }
                 mainApp.loadWebView();
             } else {
                 // do nothing, cancel

@@ -169,9 +169,12 @@ public class ViewController extends Controller {
         String hex = Util.colorToHex(c != null ? c : Color.WHITE);
         rootHolder.setStyle("-fx-background-color:" + hex + ";");
 
+        double buttonAndLogoSize = 180 - (nbrOfButtons * 10);
+        if (buttonAndLogoSize < 10)
+            buttonAndLogoSize = 10;
+
         // Adding buttons
-        int i;
-        for (i = 0; i < nbrOfButtons; i++) {
+        for (int i = 0; i < nbrOfButtons; i++) {
             ButtonInfo bInfo = buttonInfo.get(i);
             Button button = new Button();
 
@@ -236,15 +239,17 @@ public class ViewController extends Controller {
 
             button.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> showWebsite(bInfo.getURL()));
             // Setting sizing
-            button.setMinSize(150.0, 150.0);
-            button.setMaxSize(170.0, 170.0);
+//            button.setMinSize(150.0, 150.0);
+//            button.setMaxSize(150.0, 150.0);
+            button.setMinSize(buttonAndLogoSize, buttonAndLogoSize);
+            button.setMaxSize(buttonAndLogoSize, buttonAndLogoSize);
             button.wrapTextProperty().setValue(true);
             button.textAlignmentProperty().setValue(TextAlignment.CENTER);
             rootHolder.add(button, 0, i);
         }
         // Adding logo to bottom of sidebar
         final ImageView wagnerLogo = new ImageView(new Image(Main.class.getResourceAsStream("view/images/wagnerGUIDE.png")));
-        wagnerLogo.setFitWidth(200);
+        wagnerLogo.setFitWidth(buttonAndLogoSize);
         wagnerLogo.setPreserveRatio(true);
         wagnerLogo.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> showPasswordPrompt());
         rootHolder.add(wagnerLogo, 0, nbrOfButtons);
