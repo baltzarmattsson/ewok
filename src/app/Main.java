@@ -26,7 +26,7 @@ public class Main extends Application {
     private Stage primaryStage;
     private GridPane rootLayout;
 
-    private final String WINDOW_TITLE = "Wagner Wayfinder Webbskal";
+    private final String WINDOW_TITLE = "WagnerWebshell";
     private ViewController controller;
     private ConfigViewController configController;
 
