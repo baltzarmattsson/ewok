@@ -8,22 +8,23 @@ import app.util.ConfigReader;
 import app.model.Configuration;
 import app.util.IdleListener;
 import app.util.Util;
+import com.sun.javafx.webkit.WebConsoleListener;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
-import javafx.animation.Transition;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -36,10 +37,19 @@ import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.events.Event;
+import org.w3c.dom.events.EventListener;
+import org.w3c.dom.events.EventTarget;
+import sun.awt.PlatformFont;
 
 import java.io.IOException;
+import java.net.CookieHandler;
+import java.net.CookieManager;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.Callable;
 
 public class ViewController {
 
@@ -61,6 +71,10 @@ public class ViewController {
 
     @FXML
     private void initialize() {
+
+        CookieManager manager = new CookieManager();
+        CookieHandler.setDefault(manager);
+
         Configuration config = ConfigReader.getConfigInstance();
         if (config != null) {
             this.setupFromConfig(config);
@@ -79,12 +93,19 @@ public class ViewController {
                     idleListener.resetTimeAtLastAction();
                 this.idleActionIsPerformed = false;
             });
-        if (webView != null)
+        if (webView != null) {
             webView.addEventHandler(MouseEvent.ANY, e -> {
                 if (idleListener != null)
                     idleListener.resetTimeAtLastAction();
                 this.idleActionIsPerformed = false;
             });
+
+            // Sending logs to the console
+            WebConsoleListener.setDefaultListener((webview, message, lineNumber, source) -> {
+//                System.out.println("Console: [" + source + ":" + lineNumber + "] " + message);
+            });
+
+        }
 
         if (rootHolder != null) {
             // Adding listener to shortcut for Settings-password-prompt
@@ -210,9 +231,49 @@ public class ViewController {
         // Adding web view
         webView = new WebView();
         webEngine = webView.getEngine();
-        webView.setVisible(true);
 
+//        webEngine.getLoadWorker().stateProperty().addListener((ObservableValue<? extends Worker.State> ov, Worker.State oldState, Worker.State newState) -> {
+//            if (newState == Worker.State.SUCCEEDED) {
+//
+//                EventListener listener = new EventListener() {
+//                    @Override
+//                    public void handleEvent(Event evt) {
+//                        String href = ((Element) evt.getTarget()).getAttribute("href");
+//                        System.out.println();
+//                    }
+//                };
+//
+//                Document doc = webView.getEngine().getDocument();
+//                NodeList nodeList = doc.getElementsByTagName("a");
+//                ArrayList<EventTarget> castedList = new ArrayList<EventTarget>();
+//
+//                for (int i = 0; i < nodeList.getLength(); i++) {
+//                    castedList.add((org.w3c.dom.events.EventTarget)nodeList.item(i));
+////                    ((EventTarget)nodeList.item((i)).addEventListener("click", listener, false);
+//                }
+//                for (EventTarget t : castedList) {
+//                    t.addEventListener("click", listener, false);
+//                }
+//            }
+//        });
+
+        webView.setVisible(true);
         rootHolder.add(webView, 1, 0, 1, nbrOfButtons == 0 ? 1 : nbrOfButtons);
+
+        webEngine.locationProperty().addListener((arg0, oldLocation, newLocation) -> {
+
+            int indexOfTextParam = newLocation.indexOf("&text=");
+
+            if (indexOfTextParam != -1 && newLocation.contains("web.wagnerguide.com")) {
+                final String newLoc = newLocation.substring(0, indexOfTextParam);
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        webEngine.load(newLoc);
+                    }
+                });
+            }
+        });
 
     }
 
@@ -238,7 +299,7 @@ public class ViewController {
         if (idleActionIsPerformed == false) {
             Platform.runLater(() -> showDefaultSite());
             idleActionIsPerformed = true;
-            System.out.println("Switching to default");
+//            System.out.println("Switching to default");
         }
         if (this.listenersAreStopped == false)
             this.idleListener = new IdleListener(this, this.idleTimeInSeconds);

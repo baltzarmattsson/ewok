@@ -18,7 +18,7 @@ import java.util.HashMap;
 public class ConfigReader {
 
     private static Configuration configInstance;
-    public static final String settingsPwd = "hej123";
+    public static final String settingsPwd = "roslagen#";
 
     private static final String fileName = "config.txt";
     private static final String filePath = "config/";
