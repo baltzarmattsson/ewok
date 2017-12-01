@@ -42,7 +42,7 @@ public class ConfigReader {
 //            // Used from the jarfile
             jarFile = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
             finalPath = jarFile.getParent() + File.separator + filePath + File.separator + fileName;
-            br = new BufferedReader(new FileReader(new File(finalPath)));
+           br = new BufferedReader(new FileReader(new File(finalPath)));
 
             String s;
             HashMap<Integer, String> configAsText = new HashMap<Integer, String>();

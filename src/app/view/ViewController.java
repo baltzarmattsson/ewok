@@ -102,7 +102,7 @@ public class ViewController {
 
             // Sending logs to the console
             WebConsoleListener.setDefaultListener((webview, message, lineNumber, source) -> {
-//                System.out.println("Console: [" + source + ":" + lineNumber + "] " + message);
+                System.out.println("Console: [" + source + ":" + lineNumber + "] " + message);
             });
 
         }
